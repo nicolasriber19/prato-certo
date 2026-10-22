@@ -11,7 +11,7 @@ let primeiraTela = true
 // rotas:          [{ caminho: '/prato/:id', tela, exigeLogin }]
 // alvo:           onde as telas são desenhadas (o <main>)
 // naoEncontrada:  tela para endereços que não existem
-// guarda(rota):   devolve outro caminho para desviar (ex.: '/entrar'), ou nada
+// guarda(rota, caminho): devolve outro caminho para desviar (ex.: '/entrar'), ou nada
 // aoAbrir(caminho): avisa a cada troca de tela (o topo marca o link atual)
 export function iniciarRotas(configuracao) {
   config = configuracao
@@ -21,6 +21,12 @@ export function iniciarRotas(configuracao) {
 
 export function irPara(caminho) {
   location.hash = `#${caminho}`
+}
+
+// Como irPara, mas sem deixar a tela atual no histórico do "voltar".
+// Ex.: quem abre #/hoje sem preferências vai para #/preferencias; voltar não cai de novo em #/hoje.
+export function trocarPara(caminho) {
+  location.replace(`#${caminho}`)
 }
 
 // Abre de novo a tela atual (ex.: depois de entrar ou sair da conta).
@@ -67,7 +73,7 @@ async function abrir() {
   const caminho = caminhoAtual()
   const achou = encontrar(caminho)
 
-  const desvio = achou && config.guarda?.(achou.rota)
+  const desvio = achou && config.guarda?.(achou.rota, caminho)
   if (desvio) {
     location.replace(`#${desvio}`) // replace: o "voltar" não cai de novo na tela bloqueada
     return

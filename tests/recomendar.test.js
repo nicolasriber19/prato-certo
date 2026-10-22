@@ -178,6 +178,18 @@ describe('pontos e ordem', () => {
     assert.equal(depois.sugestoes[0].motivos[0], 'Você deu 5 estrelas')
   })
 
+  it('um prato com nota 1 não fica em primeiro, mesmo combinando com momento, gosto e distância', () => {
+    const odiado = prato({ restaurante_id: 1, cozinha: 'italiana', momentos: ['almoco_rapido'] })
+    const comum = prato({ momentos: ['almoco_rapido'] })
+
+    const resultado = recomendar([odiado, comum], {
+      origem: ORIGEM,
+      perfil: { gostos: ['italiana'] },
+      minhasNotas: new Map([[odiado.id, 1]]),
+    })
+    assert.deepEqual(ids(resultado), [comum.id, odiado.id])
+  })
+
   it('nota 3 não muda nada', () => {
     const a = prato()
     const resultado = recomendar([a], { minhasNotas: new Map([[a.id, 3]]) })

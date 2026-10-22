@@ -1,0 +1,38 @@
+/* Animações leves. Só mexem no tamanho (transform), o jeito mais leve de animar no celular.
+   Com "reduzir movimento" ligado no aparelho (RNF-05), nada se move:
+   o retorno vem pela cor e pelo texto do botão ("Favorito"). */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* O coração pulsa ao favoritar */
+  @keyframes pulso {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.35);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .botao-favorito--pulso .icone {
+    animation: pulso 0.3s ease-out;
+  }
+
+  /* A sugestão em destaque aparece subindo um pouco (ao trocar de sugestão ou de momento) */
+  @keyframes surgir {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .cartao-prato--destaque {
+    animation: surgir 0.25s ease-out;
+  }
+}

@@ -56,7 +56,7 @@ As telas logadas mandam quem não entrou para `#/entrar`.
    - distância: até 2 km +2, até 5 km +1;
    - média ≥ 4: +1;
    - sua nota 4–5: +2;
-   - sua nota 1–2: −4;
+   - sua nota 1–2: −8 (mudou de −4: com −4, um prato com nota 1 ainda podia ficar em primeiro);
    - escolhido nos últimos 3 dias: −2, para variar;
    - favorito: +1.
 3. **Devolve** a lista ordenada, com os motivos em palavras ("Vegano", "Bom para almoço rápido", "A 1,2 km"). A tela mostra esses motivos.
@@ -160,4 +160,9 @@ prato-certo/
 - **Portas próprias**: `5180` (dev) e `4180` (preview), porque a 5173 é do Superadega.
 - **Guia de estilo** em `#/guia`: cores, letras, botões, chips, selos e ícones numa tela só. Não aparece na navegação.
 - **Navegação**: barra fixa no pé da tela até 959 px. A partir de 960 px, fica no topo, porque antes disso não cabe ao lado da marca.
-- **Testes** em `tests/`: recomendação, momento pela hora e distância (`npm test`).
+- **Testes** em `tests/`: recomendação, momento pela hora, distância e catálogo (`npm test`).
+- **Modo demonstração**: sem `.env.local`, o site usa o catálogo de exemplo e guarda tudo no navegador. Permitiu fazer e testar os passos 7 a 16 antes de o Supabase existir, e serve de plano B na apresentação.
+- **Catálogo com fonte única**: `src/dados/catalogo-exemplo.js`. O `supabase/seed.sql` é gerado dele (`npm run gerar-seed`).
+- **Tela Hoje sem o botão "Me sugira"**: a sugestão já aparece ao abrir, para o momento da hora. Um toque a menos.
+- **Nota baixa pesa −8** (era −4): com −4, um prato que a pessoa avaliou com 1 estrela ainda podia aparecer em primeiro.
+- **Favoritos**: tirar um favorito não some com o cartão na hora; ele fica até sair da tela, para dar para desfazer.

@@ -10,6 +10,7 @@ Versão 1, 22/10/2026. Base: `docs/brief.md`. Termos técnicos no glossário, no
 - Sugestões de pratos e restaurantes de acordo com o perfil e o momento.
 - Favoritos, histórico de escolhas e avaliações.
 - Restaurantes e pratos **de exemplo** (fictícios), em bairros de Brasília.
+- Modo demonstração: sem Supabase configurado, tudo funciona com os dados no próprio navegador (ver `docs/stack.md`).
 
 **Fora desta versão**
 - Dados reais de restaurantes, vindos de outro serviço.

@@ -378,3 +378,476 @@ body:has(.navegacao:not([hidden])) {
   color: var(--cor-primaria-escura);
   font-weight: 600;
 }
+
+/* Faixa do modo demonstração --------------------------------------------- */
+.aviso-demo {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+  margin: 0;
+  padding: 8px max(var(--espaco), calc((100% - var(--largura-maxima)) / 2));
+  font-size: 1rem;
+  background: var(--cor-destaque); /* texto escuro sobre ela: 9,04:1 */
+}
+
+.carregando {
+  color: var(--cor-texto-suave);
+}
+
+.texto-erro {
+  color: var(--cor-erro);
+}
+
+/* Botões extras ------------------------------------------------------------ */
+.botao--leve {
+  border-color: transparent;
+  padding-inline: 0.5em;
+}
+
+.botao--perigo {
+  border-color: var(--cor-erro);
+  color: #ffffff;
+  background: var(--cor-erro); /* branco sobre ela: 6,54:1 */
+}
+
+.botao--perigo:hover {
+  border-color: var(--cor-texto);
+  color: #ffffff;
+}
+
+.botao-favorito[aria-pressed='true'] {
+  color: var(--cor-primaria-escura);
+  background: var(--cor-fundo-suave);
+}
+
+/* Formulários (entrar, criar conta) ---------------------------------------- */
+.formulario {
+  display: grid;
+  gap: 20px;
+  max-width: 28rem;
+  margin-top: 24px;
+}
+
+.campo {
+  display: grid;
+  gap: 6px;
+}
+
+.campo__rotulo {
+  font-weight: 700;
+}
+
+.campo__dica {
+  font-size: 1rem;
+  color: var(--cor-texto-suave);
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+}
+
+.formulario__troca {
+  margin-top: 24px;
+}
+
+/* Preferências ------------------------------------------------------------- */
+.etapas__progresso {
+  display: inline-block;
+  padding: 0.2em 0.75em;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--cor-primaria-escura);
+  background: var(--cor-fundo-suave);
+}
+
+.etapa {
+  margin-top: 24px;
+}
+
+.etapa h3 {
+  margin-top: 32px;
+}
+
+.etapa h2:focus {
+  outline: none; /* recebe o foco ao trocar de etapa, só para o leitor de tela anunciar */
+}
+
+/* Hoje --------------------------------------------------------------------- */
+.resumo-perfil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5em;
+  align-items: center;
+  color: var(--cor-texto-suave);
+}
+
+.resumo-perfil a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-minimo);
+  font-weight: 700;
+}
+
+.titulo-pequeno {
+  margin-top: 16px;
+  font-size: 1.125rem;
+}
+
+.barra-local {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.barra-local p {
+  display: flex;
+  gap: 0.4em;
+  align-items: flex-start; /* o ícone fica ao lado do texto, mesmo quando ele quebra a linha */
+  margin: 0;
+  color: var(--cor-texto-suave);
+}
+
+/* Abas Pratos | Restaurantes: um botão ligado por vez (aria-pressed) */
+.abas {
+  display: inline-flex;
+  margin-top: 24px;
+  padding: 4px;
+  border-radius: calc(var(--raio) + 4px);
+  background: var(--cor-fundo-suave);
+}
+
+.aba {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: var(--toque-minimo);
+  padding: 0 1em;
+  border: 0;
+  border-radius: var(--raio);
+  font: inherit;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  background: transparent;
+  cursor: pointer;
+}
+
+.aba[aria-pressed='true'] {
+  color: var(--cor-primaria-escura);
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+
+[data-resultados] {
+  margin-top: 24px;
+}
+
+.rotulo-destaque {
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: var(--cor-primaria-escura);
+}
+
+.acoes--outra {
+  align-items: center;
+  margin-top: 16px;
+}
+
+.contador-sugestao {
+  color: var(--cor-texto-suave);
+}
+
+.titulo-secao {
+  margin-top: 40px;
+}
+
+.confirmacao {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+  max-width: 40rem;
+  margin-top: 12px;
+  padding: 12px var(--espaco);
+  border-radius: var(--raio);
+  color: var(--cor-sucesso);
+  background: var(--cor-sucesso-fundo);
+}
+
+/* Cartões de prato e restaurante -------------------------------------------- */
+.cartoes > li {
+  display: flex; /* cartões da mesma linha com a mesma altura */
+}
+
+.cartoes > li > .cartao {
+  flex: 1;
+}
+
+.cartao-prato,
+.cartao-restaurante {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cartao-prato > *,
+.cartao-restaurante > * {
+  margin: 0;
+}
+
+.cartao__foto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: calc(var(--raio) - 4px);
+}
+
+.cartao-prato__nome {
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+/* O nome do prato é um link: ganha altura de toque de 44 px+ (RNF-09) */
+.cartao-prato__nome a,
+.escolha__prato a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-minimo);
+  color: var(--cor-texto);
+  text-decoration-color: var(--cor-primaria);
+}
+
+.cartao-prato__nome .icone {
+  color: var(--cor-primaria);
+}
+
+.cartao-prato__onde {
+  color: var(--cor-texto-suave);
+}
+
+.cartao-prato__preco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.cartao-prato__tempo {
+  display: inline-flex;
+  gap: 0.3em;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--cor-texto-suave);
+}
+
+.motivos {
+  display: grid;
+  gap: 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.motivos li {
+  display: flex;
+  gap: 0.4em;
+  align-items: flex-start;
+}
+
+.motivos .icone {
+  color: var(--cor-sucesso);
+}
+
+.cartao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto; /* os botões ficam no pé do cartão */
+  padding-top: 4px;
+}
+
+.cartao-prato--destaque {
+  max-width: 40rem;
+  padding: 24px;
+  border: 2px solid var(--cor-primaria);
+  box-shadow: 0 6px 20px rgb(143 42 22 / 0.12);
+}
+
+.cartao-prato--destaque .cartao-prato__nome {
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+}
+
+/* Detalhe ------------------------------------------------------------------ */
+.ficha {
+  display: grid;
+  gap: 8px;
+  max-width: 40rem;
+  margin: 24px 0;
+}
+
+.ficha > div {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, auto) 1fr;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.ficha dt {
+  font-weight: 700;
+}
+
+.ficha dd {
+  margin: 0;
+}
+
+.secao {
+  margin-top: 40px;
+}
+
+.texto ul {
+  max-width: 60ch;
+  padding-left: 1.25em;
+}
+
+.texto li + li {
+  margin-top: 8px;
+}
+
+.confirmar {
+  max-width: 40rem;
+  padding: 16px;
+  border: 2px solid var(--cor-erro);
+  border-radius: var(--raio);
+}
+
+/* Notas e estrelas ----------------------------------------------------------- */
+.nota {
+  display: inline-flex;
+  gap: 0.4em;
+  align-items: center;
+  font-weight: 700;
+}
+
+.nota > span[aria-hidden] {
+  display: inline-flex;
+}
+
+.nota__estrela {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--cor-borda);
+}
+
+.nota__estrela--cheia,
+.estrela.estrela--cheia {
+  color: var(--cor-estrela);
+}
+
+.avaliacao {
+  display: grid;
+  gap: 16px;
+  max-width: 32rem;
+}
+
+.estrelas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.estrelas legend {
+  margin-bottom: 8px;
+  padding: 0;
+  font-weight: 700;
+}
+
+.estrela {
+  display: grid;
+  place-items: center;
+  width: var(--toque-minimo);
+  height: var(--toque-minimo);
+  border-radius: var(--raio);
+  color: var(--cor-borda);
+  cursor: pointer;
+}
+
+.estrela .icone {
+  width: 36px;
+  height: 36px;
+}
+
+.estrela__cheia,
+.estrela--cheia .estrela__vazia {
+  display: none;
+}
+
+.estrela--cheia .estrela__cheia {
+  display: block;
+}
+
+/* O rádio fica escondido: o foco do teclado aparece na estrela */
+.estrela:has(input:focus-visible) {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.avaliacao__resposta:empty {
+  display: none;
+}
+
+/* Minhas escolhas ------------------------------------------------------------ */
+.escolhas {
+  display: grid;
+  gap: var(--espaco);
+  max-width: 44rem;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.escolha {
+  display: grid;
+  gap: 8px;
+}
+
+.escolha > * {
+  margin: 0;
+}
+
+.escolha__quando {
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--cor-texto-suave);
+}
+
+.escolha__prato {
+  font-size: 1.25rem;
+}
+
+.escolha__sem-nota,
+.escolha__comentario {
+  color: var(--cor-texto-suave);
+}
+
+.escolha__avaliar summary {
+  display: inline-flex;
+  gap: 0.4em;
+  align-items: center;
+  min-height: var(--toque-minimo);
+  font-weight: 700;
+  color: var(--cor-primaria-escura);
+  cursor: pointer;
+}
+
+.escolha__avaliar[open] summary {
+  margin-bottom: 12px;
+}

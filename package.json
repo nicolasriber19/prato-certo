@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test",
-    "conferir": "node --env-file-if-exists=.env.local scripts/conferir-supabase.js"
+    "conferir": "node --env-file-if-exists=.env.local scripts/conferir-supabase.js",
+    "gerar-seed": "node scripts/gerar-seed.js"
   },
   "devDependencies": {
     "vite": "^8.3.5"

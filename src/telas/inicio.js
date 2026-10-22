@@ -2,6 +2,7 @@
 
 import { icone } from '../lib/icone.js'
 import { RESTRICOES } from '../lib/opcoes.js'
+import { estaLogado } from '../lib/sessao.js'
 
 const PASSOS = [
   { icone: 'ajustes', titulo: 'Conte seus gostos', texto: 'Cozinhas preferidas, restrições e quanto quer gastar.' },
@@ -22,8 +23,12 @@ export const inicio = {
           O Prato Certo sugere pratos e restaurantes perto de você.
         </p>
         <div class="acoes">
-          <a class="botao botao--primario botao--grande" href="#/criar-conta">${icone('usuario')} Criar conta</a>
-          <a class="botao botao--grande" href="#/entrar">${icone('entrar')} Já tenho conta</a>
+          ${
+            estaLogado()
+              ? `<a class="botao botao--primario botao--grande" href="#/hoje">${icone('prato')} Ver sugestões de hoje</a>`
+              : `<a class="botao botao--primario botao--grande" href="#/criar-conta">${icone('usuario')} Criar conta</a>
+                 <a class="botao botao--grande" href="#/entrar">${icone('entrar')} Já tenho conta</a>`
+          }
         </div>
       </section>
 

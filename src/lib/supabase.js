@@ -10,7 +10,17 @@ import { createClient } from '@supabase/supabase-js'
 const url = import.meta.env.VITE_SUPABASE_URL
 const chave = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
-// Sem o .env.local, o site abre, mas avisa que falta configurar (em vez de quebrar).
 export const supabaseConfigurado = Boolean(url && chave)
 
+// Sem o .env.local, o site funciona no modo demonstração: usa os restaurantes de
+// src/dados/catalogo-exemplo.js e guarda tudo só neste navegador (src/dados/local.js).
+export const modoDemonstracao = !supabaseConfigurado
+
 export const supabase = supabaseConfigurado ? createClient(url, chave) : null
+
+// Toda resposta do Supabase vem como { data, error }. Esta função devolve os dados
+// ou lança o erro, para a tela mostrar a mensagem.
+export function dadosOuErro({ data, error }) {
+  if (error) throw error
+  return data
+}

@@ -21,7 +21,7 @@
       </a>
 
       <!-- No celular, esta navegação vira uma barra fixa no pé da tela (telas.css). -->
-      <nav class="navegacao" aria-label="Principal" data-navegacao data-so-logado>
+      <nav class="navegacao" aria-label="Principal" data-navegacao data-so-logado hidden>
         <a class="navegacao__link" href="#/hoje">
           <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#prato"></use></svg>
           Hoje
@@ -45,13 +45,18 @@
           <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#entrar"></use></svg>
           Entrar
         </a>
-        <!-- O "Sair" passa a funcionar no passo 7 (login). -->
-        <button type="button" class="botao" data-sair data-so-logado>
+        <button type="button" class="botao" data-sair data-so-logado hidden>
           <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#sair"></use></svg>
           Sair
         </button>
       </div>
     </header>
+
+    <!-- Aparece só no modo demonstração (sem Supabase configurado): ver src/lib/supabase.js -->
+    <p class="aviso-demo" data-aviso-demo hidden>
+      <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#alerta"></use></svg>
+      Modo demonstração: os dados ficam só neste navegador.
+    </p>
 
     <!-- Cada tela é desenhada aqui pelo roteador (src/lib/rotas.js). -->
     <main id="conteudo" tabindex="-1">

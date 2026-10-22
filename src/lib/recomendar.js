@@ -10,6 +10,7 @@
 import { nomeDaRestricao, cozinha } from './opcoes.js'
 import { nomeDoMomento } from './momento.js'
 import { distanciaKm, formatarDistancia } from './distancia.js'
+import { juntar } from './textos.js'
 
 export const PONTOS = {
   gosta: 3, //               cozinha de que gosta
@@ -19,7 +20,7 @@ export const PONTOS = {
   perto: 1, //               até 5 km
   bemAvaliado: 1, //         média de todos ≥ 4
   minhaNotaBoa: 2, //        eu dei 4 ou 5
-  minhaNotaRuim: -4, //      eu dei 1 ou 2
+  minhaNotaRuim: -8, //      eu dei 1 ou 2 (pesa mais que momento + gosto: não volta ao topo)
   escolhidoHaPouco: -2, //   escolhi nos últimos 3 dias (para variar)
   favorito: 1, //            está nos meus favoritos
 }
@@ -34,14 +35,6 @@ export function atendeRestricoes(prato, restricoes = []) {
 // orcamentoMax vazio (null) = sem limite
 export function cabeNoOrcamento(prato, orcamentoMax) {
   return orcamentoMax == null || Number(prato.preco) <= Number(orcamentoMax)
-}
-
-// ["Vegano", "Sem glúten", "Sem lactose"] → "Vegano, sem glúten e sem lactose"
-function juntar(nomes) {
-  const [primeiro, ...resto] = nomes
-  if (resto.length === 0) return primeiro
-  const minusculos = resto.map((nome) => nome.toLowerCase())
-  return `${[primeiro, ...minusculos.slice(0, -1)].join(', ')} e ${minusculos.at(-1)}`
 }
 
 function formatarNota(media) {

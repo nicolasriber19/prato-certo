@@ -13,6 +13,7 @@
   --cor-destaque: #f2b632;        /* mostarda. Texto escuro sobre ela: 9,04:1 */
   --cor-sucesso: #1d6b35;         /* selos de restrição (vegano etc.): 6,55:1 */
   --cor-sucesso-fundo: #e8f3ea;   /* verde sobre ele: 5,75:1 */
+  --cor-estrela: #a86b00;         /* estrelas cheias: mostarda escura, 4,40:1 (ícone pede 3:1) */
   --cor-foco: #0a3d8f;            /* 10,11:1 */
   --cor-borda: #767676;           /* 4,54:1 (mínimo para bordas de botões e campos: 3:1) */
   --cor-borda-suave: #e4d9cf;     /* só decorativa: cartões e divisórias */

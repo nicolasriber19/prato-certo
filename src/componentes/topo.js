@@ -22,8 +22,7 @@ export function marcarLinkAtual(caminho) {
   })
 }
 
-// Até o passo 7 (login), o topo mostra tudo. Depois, main.js chama esta função
-// sempre que a sessão mudar.
+// main.js chama esta função ao abrir o site e sempre que a sessão mudar.
 export function atualizarTopo(logado) {
   document.querySelectorAll('[data-so-logado]').forEach((item) => (item.hidden = !logado))
   document.querySelectorAll('[data-so-visitante]').forEach((item) => (item.hidden = logado))
