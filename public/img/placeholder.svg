@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <!-- Imagem provisória: fica no lugar das fotos dos pratos até as imagens chegarem. -->
+  <rect width="600" height="600" fill="#e6ede3" />
+  <g fill="none" stroke="#5b6b57" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="190" y="210" width="220" height="180" rx="18" />
+    <path d="M200 370l70-80 50 55 30-30 50 55" />
+  </g>
+  <circle cx="355" cy="255" r="18" fill="#5b6b57" />
+</svg>

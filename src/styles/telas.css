@@ -1,0 +1,380 @@
+/* Layout do site e das telas, de 375 a 1920 px (RNF-01).
+   O conteúdo fica limitado a --largura-maxima e centralizado. */
+
+.topo,
+.tela,
+.rodape {
+  padding-inline: max(var(--espaco), calc((100% - var(--largura-maxima)) / 2));
+}
+
+/* Topo ------------------------------------------------------------------- */
+.topo {
+  display: flex;
+  flex-wrap: wrap; /* em telas muito estreitas, os botões descem em vez de vazar */
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px var(--espaco);
+  padding-block: 8px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: var(--toque-minimo);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--cor-primaria-escura);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.topo__conta {
+  display: flex;
+  gap: 8px;
+}
+
+.topo__conta .botao {
+  padding-inline: 0.75em;
+}
+
+/* Navegação principal: no celular e no tablet, barra fixa no pé da tela, com ícone sobre a palavra.
+   A partir de 960 px, fica dentro do topo (antes disso, não cabe ao lado da marca e do Sair). */
+.navegacao {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo);
+}
+
+.navegacao__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 64px;
+  padding: 6px 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  text-decoration: none;
+}
+
+.navegacao__link[aria-current='page'] {
+  color: var(--cor-primaria-escura);
+  box-shadow: inset 0 3px 0 var(--cor-primaria);
+}
+
+/* Espaço para a barra fixa (64 px + borda) não cobrir o fim da página */
+body:has(.navegacao:not([hidden])) {
+  padding-bottom: 72px;
+}
+
+@media (min-width: 960px) {
+  .navegacao {
+    position: static;
+    display: flex;
+    gap: 4px;
+    margin-inline: auto 0;
+    border: 0;
+  }
+
+  .navegacao__link {
+    flex-direction: row;
+    gap: 0.4em;
+    min-height: var(--toque-minimo);
+    padding: 0 0.75em;
+    border-radius: var(--raio);
+  }
+
+  .navegacao__link:hover {
+    background: var(--cor-fundo-suave);
+    color: var(--cor-texto);
+  }
+
+  .navegacao__link[aria-current='page'] {
+    box-shadow: inset 0 -3px 0 var(--cor-primaria);
+  }
+
+  body:has(.navegacao:not([hidden])) {
+    padding-bottom: 0;
+  }
+}
+
+/* Telas -------------------------------------------------------------------- */
+#conteudo:focus {
+  outline: none; /* o foco vai para o título da tela; o <main> só recebe o "Pular" */
+}
+
+.tela {
+  padding-block: 32px 48px;
+}
+
+.tela h1:focus {
+  outline: none; /* recebe o foco ao trocar de tela, só para o leitor de tela anunciar */
+}
+
+.tela__intro {
+  max-width: 60ch;
+  font-size: 1.25rem;
+  color: var(--cor-texto-suave);
+}
+
+.aviso {
+  display: flex;
+  gap: 0.5em;
+  align-items: flex-start;
+  max-width: 60ch;
+  padding: 12px var(--espaco);
+  border-radius: var(--raio);
+  background: var(--cor-fundo-suave);
+}
+
+.aviso--erro {
+  color: var(--cor-erro);
+  background: #fdecea; /* texto de erro sobre ele: 5,72:1 */
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* Selos de restrição (vegano, sem glúten...) ------------------------------- */
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--cor-sucesso);
+  background: var(--cor-sucesso-fundo);
+}
+
+.selo .icone {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+/* Chips: botões de escolha que ficam ligados ou desligados (aria-pressed) -------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: var(--toque-minimo);
+  padding: 0.4em 1em;
+  border: 2px solid var(--cor-borda);
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip:hover {
+  border-color: var(--cor-texto);
+}
+
+/* Ligado: cor de fundo E um ícone de "confere", para não depender só da cor */
+.chip[aria-pressed='true'] {
+  border-color: var(--cor-primaria);
+  color: #ffffff;
+  background: var(--cor-primaria);
+}
+
+.chip__confere {
+  display: none;
+}
+
+.chip[aria-pressed='true'] .chip__confere {
+  display: block;
+}
+
+/* Cartões ------------------------------------------------------------------ */
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--espaco);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cartao {
+  padding: 20px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio);
+  background: var(--cor-fundo);
+}
+
+.cartao h3 {
+  font-size: 1.25rem;
+}
+
+.cartao p:last-child {
+  margin-bottom: 0;
+}
+
+/* Início ------------------------------------------------------------------- */
+/* Telas "cheias" (como o Início) desenham faixas que vão de uma borda à outra. */
+.tela--cheia {
+  padding: 0;
+}
+
+.faixa {
+  padding: 48px max(var(--espaco), calc((100% - var(--largura-maxima)) / 2));
+}
+
+.faixa--suave {
+  background: var(--cor-fundo-suave);
+}
+
+.inicio h1 {
+  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.5rem);
+  color: var(--cor-primaria-escura);
+}
+
+.passos {
+  counter-reset: passo;
+}
+
+.passos .cartao {
+  position: relative;
+  padding-top: 64px;
+}
+
+.passos .cartao::before {
+  counter-increment: passo;
+  content: counter(passo);
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 800;
+  color: #ffffff;
+  background: var(--cor-primaria);
+}
+
+.passos .cartao .icone {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 32px;
+  height: 32px;
+  color: var(--cor-primaria);
+}
+
+.nota-exemplo {
+  color: var(--cor-texto-suave);
+}
+
+/* Guia de estilo (#/guia) -------------------------------------------------- */
+.guia__cores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guia__cor {
+  display: grid;
+  gap: 4px;
+  font-size: 1rem;
+}
+
+.guia__amostra {
+  height: 64px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio);
+}
+
+.guia__icones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guia__icones li {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 12px 4px;
+  border-radius: var(--raio);
+  background: var(--cor-fundo-suave);
+  font-size: 1rem;
+}
+
+.guia__icones .icone {
+  width: 32px;
+  height: 32px;
+}
+
+.guia section {
+  margin-top: 40px;
+}
+
+/* Rodapé ------------------------------------------------------------------- */
+.rodape {
+  padding-block: 32px;
+  border-top: 1px solid var(--cor-borda-suave);
+  color: var(--cor-texto-suave);
+  background: var(--cor-fundo-suave);
+}
+
+.rodape p {
+  max-width: 60ch;
+}
+
+.rodape__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.rodape__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: var(--toque-minimo);
+  color: var(--cor-primaria-escura);
+  font-weight: 600;
+}

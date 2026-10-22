@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Prato Certo: sugestões de pratos e restaurantes de acordo com seus gostos, suas restrições e seu orçamento."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Prato Certo</title>
+  </head>
+  <body>
+    <!-- Atalho para quem usa teclado ou leitor de tela (RNF-02) -->
+    <a class="botao botao--primario pular-link" href="#conteudo" data-pular>Pular para o conteúdo</a>
+
+    <header class="topo">
+      <a class="marca" href="#/">
+        <img src="/favicon.svg" alt="" width="32" height="32" />
+        Prato Certo
+      </a>
+
+      <!-- No celular, esta navegação vira uma barra fixa no pé da tela (telas.css). -->
+      <nav class="navegacao" aria-label="Principal" data-navegacao data-so-logado>
+        <a class="navegacao__link" href="#/hoje">
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#prato"></use></svg>
+          Hoje
+        </a>
+        <a class="navegacao__link" href="#/favoritos">
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#coracao"></use></svg>
+          Favoritos
+        </a>
+        <a class="navegacao__link" href="#/historico">
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#relogio"></use></svg>
+          Escolhas
+        </a>
+        <a class="navegacao__link" href="#/preferencias">
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#ajustes"></use></svg>
+          Perfil
+        </a>
+      </nav>
+
+      <div class="topo__conta">
+        <a class="botao" href="#/entrar" data-so-visitante>
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#entrar"></use></svg>
+          Entrar
+        </a>
+        <!-- O "Sair" passa a funcionar no passo 7 (login). -->
+        <button type="button" class="botao" data-sair data-so-logado>
+          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#sair"></use></svg>
+          Sair
+        </button>
+      </div>
+    </header>
+
+    <!-- Cada tela é desenhada aqui pelo roteador (src/lib/rotas.js). -->
+    <main id="conteudo" tabindex="-1">
+      <noscript>
+        <p class="tela">O Prato Certo precisa de JavaScript ligado para funcionar.</p>
+      </noscript>
+    </main>
+
+    <footer class="rodape">
+      <ul class="rodape__links">
+        <li>
+          <a href="#/privacidade">
+            <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#escudo"></use></svg>
+            Privacidade
+          </a>
+        </li>
+      </ul>
+      <p>Prato Certo: projeto final de Desenvolvimento de Interfaces, CEUB, 2026.</p>
+      <p>Os restaurantes e os pratos são exemplos fictícios. Confirme sempre com o restaurante se o prato atende à sua restrição.</p>
+    </footer>
+
+    <!-- Avisos lidos pelo leitor de tela (ex.: "Adicionado aos favoritos") -->
+    <p class="visualmente-oculto" aria-live="polite" data-anuncio></p>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,165 @@
+/* Base do site: reset leve, letra, botões e foco.
+   As variáveis (cores, fonte, espaços) ficam em tokens.css. */
+
+/* Correções básicas */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%; /* respeita o tamanho de letra escolhido no aparelho */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  font-size: 1.125rem; /* 18 px: acima do mínimo de 16 px (RNF-10) */
+  line-height: 1.5;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.625rem;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+/* <small> do navegador fica com 15 px: abaixo do mínimo de 16 px (RNF-10) */
+small {
+  font-size: 1rem;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--cor-primaria);
+  text-underline-offset: 0.15em;
+}
+
+/* Foco visível em tudo que recebe o teclado (RNF-02) */
+:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 3px;
+}
+
+/* Botões: área de toque grande, ícone + palavra (RNF-09) */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  min-height: var(--toque-minimo);
+  min-width: var(--toque-minimo);
+  padding: 0.6em 1.2em;
+  border: 2px solid var(--cor-primaria);
+  border-radius: var(--raio);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  touch-action: manipulation; /* toques rápidos no + não dão zoom no celular */
+}
+
+.botao:hover {
+  border-color: var(--cor-primaria-escura);
+  color: var(--cor-primaria-escura);
+}
+
+.botao--primario {
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.botao--primario:hover {
+  background: var(--cor-primaria-escura);
+  color: #ffffff;
+}
+
+.botao--grande {
+  min-height: 56px;
+  padding: 0.75em 1.5em;
+  font-size: 1.25rem;
+}
+
+/* Ícones do arquivo public/icons/icones.svg */
+.icone {
+  flex: none;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+/* Campos de formulário */
+input,
+select,
+textarea {
+  font: inherit;
+  min-height: var(--toque-minimo);
+  padding: 0.5em 0.75em;
+  border: 2px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+/* Garante que o atributo hidden esconda mesmo os botões (que usam display: inline-flex) */
+[hidden] {
+  display: none !important;
+}
+
+/* Some da tela, mas o leitor de tela continua lendo */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Link "Pular para o conteúdo": só aparece quando recebe o foco */
+.pular-link {
+  position: absolute;
+  top: var(--espaco);
+  left: var(--espaco);
+  z-index: 10;
+  transform: translateY(-200%);
+}
+
+.pular-link:focus-visible {
+  transform: none;
+}
+
+/* Rolagem suave só para quem não pediu menos movimento (RNF-05) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

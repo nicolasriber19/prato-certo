@@ -1,0 +1,18 @@
+# Texto sempre com fim de linha LF no repositório
+# (evita os avisos "LF will be replaced by CRLF" no Windows).
+* text=auto eol=lf
+
+# Imagens, vídeos e fontes: arquivos binários, o Git não mexe neles.
+*.webp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.avif binary
+*.ico binary
+*.mp4 binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

@@ -1,0 +1,31 @@
+/* Variáveis do site: cores, letra e espaços.
+   Cores provisórias: podem mudar na etapa de identidade visual (passo 6),
+   mas toda troca precisa manter o contraste (RNF-03). */
+
+:root {
+  /* Cores. Contraste medido contra o fundo branco, a não ser quando indicado. */
+  --cor-texto: #1f1f1f;           /* 16,48:1 (15,23:1 sobre o fundo suave) */
+  --cor-texto-suave: #4a4a4a;     /* 8,86:1 (8,19:1 sobre o fundo suave) */
+  --cor-fundo: #ffffff;
+  --cor-fundo-suave: #fbf5ef;     /* creme */
+  --cor-primaria: #b5371f;        /* terracota. Branco sobre ela: 5,95:1 */
+  --cor-primaria-escura: #8f2a16; /* branco sobre ela: 8,36:1 */
+  --cor-destaque: #f2b632;        /* mostarda. Texto escuro sobre ela: 9,04:1 */
+  --cor-sucesso: #1d6b35;         /* selos de restrição (vegano etc.): 6,55:1 */
+  --cor-sucesso-fundo: #e8f3ea;   /* verde sobre ele: 5,75:1 */
+  --cor-foco: #0a3d8f;            /* 10,11:1 */
+  --cor-borda: #767676;           /* 4,54:1 (mínimo para bordas de botões e campos: 3:1) */
+  --cor-borda-suave: #e4d9cf;     /* só decorativa: cartões e divisórias */
+  --cor-erro: #b3261e;            /* 6,54:1 */
+
+  /* Letra do próprio aparelho: não baixa nenhum arquivo (RNF-08). */
+  --fonte: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Tamanhos e espaços */
+  --toque-minimo: 48px;           /* RNF-09 pede 44 px; 48 dá folga */
+  --raio: 12px;
+  --espaco: 16px;
+  --largura-maxima: 1200px;
+
+  color-scheme: light;
+}
