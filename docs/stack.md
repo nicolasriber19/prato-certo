@@ -87,6 +87,8 @@ Serve para testar sem internet e como **plano B na apresentação**, se o Supaba
 ## 7. Onde publicar
 
 - **GitHub Pages:** serve para um projeto acadêmico. O `vite.config.js` já tem `base: '/prato-certo/'`, para o endereço `https://<usuário>.github.io/prato-certo/`.
+- **Como publica:** pelo GitHub Actions (`.github/workflows/publicar.yml`). A cada push na `main`, o GitHub roda os testes e o `npm run build` e publica a pasta `dist/`. Endereço: https://nicolasriber19.github.io/prato-certo/. Em Settings → Pages, a origem precisa ser **GitHub Actions** (publicar a branch direto não funciona: o Vite precisa montar o site antes).
+- **Modo do site publicado:** demonstração, porque o `.env.local` não vai para o GitHub. Para usar o Supabase, crie os secrets `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` em Settings → Secrets and variables → Actions e descomente o bloco `env` do workflow.
 - **Depois de publicar:** no Supabase, em Authentication → URL Configuration, colocar esse endereço em "Site URL". Sem isso, os links dos e-mails (confirmação, troca de senha) apontam para o `localhost`.
 - **Localização:** só funciona em HTTPS ou no `localhost`. O GitHub Pages já usa HTTPS.
 

@@ -1,0 +1,65 @@
+# Publica o site no GitHub Pages a cada push na main.
+# O Vite precisa montar o site antes (npm run build, que gera a pasta dist/):
+# publicar os arquivos do repositório direto não funciona.
+#
+# O site vai ao ar no modo demonstração: o .env.local não vai para o GitHub.
+# Para usar o Supabase no site publicado, crie os secrets VITE_SUPABASE_URL e
+# VITE_SUPABASE_PUBLISHABLE_KEY no repositório e descomente o bloco "env" do passo de build.
+#
+# Doc: https://vite.dev/guide/static-deploy#github-pages
+
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # também dá para publicar à mão, na aba Actions
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Se dois pushes chegarem juntos, só o mais novo é publicado.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  montar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar as dependências
+        run: npm ci
+
+      - name: Rodar os testes
+        run: npm test
+
+      - name: Montar o site
+        run: npm run build
+        # env:
+        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        #   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  publicar:
+    needs: montar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - id: publicacao
+        uses: actions/deploy-pages@v5
