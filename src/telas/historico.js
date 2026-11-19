@@ -10,6 +10,7 @@ import { emReais } from '../lib/dinheiro.js'
 import { icone } from '../lib/icone.js'
 import { escapar } from '../lib/html.js'
 import { notaEmEstrelas, formAvaliacao, ligarAvaliacoes } from '../componentes/avaliacao.js'
+import { esqueleto } from '../componentes/esqueleto.js'
 
 function notaAtual(avaliacao) {
   if (!avaliacao) return '<p class="escolha__sem-nota">Ainda sem avaliação.</p>'
@@ -23,7 +24,7 @@ export const historico = {
   titulo: 'Minhas escolhas',
 
   async montar(area) {
-    area.innerHTML = '<h1>Minhas escolhas</h1><div data-corpo><p class="carregando">Carregando…</p></div>'
+    area.innerHTML = `<h1>Minhas escolhas</h1><div data-corpo>${esqueleto()}</div>`
     const [{ pratos, restaurantes }, escolhas, minhas] = await Promise.all([
       carregarCatalogo(),
       listarEscolhas(),

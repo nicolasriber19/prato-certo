@@ -77,9 +77,14 @@ notas.error ? falha(`a função "notas_dos_pratos" falhou: ${notas.error.message
 
 console.log('2. Regras de acesso (RLS), sem login')
 
+// Sem conexão, um erro não quer dizer "bloqueado": quer dizer que não deu para conferir.
+const semConexao = (erro) => /fetch failed|network|ENOTFOUND|ECONNREFUSED/i.test(erro?.message ?? '')
+
 for (const tabela of ['perfis', 'favoritos', 'escolhas', 'avaliacoes']) {
   const leitura = await supabase.from(tabela).select('*').limit(1)
-  if (leitura.error) {
+  if (semConexao(leitura.error)) {
+    falha(`não deu para conferir "${tabela}": sem conexão com o Supabase (o projeto está pausado?)`)
+  } else if (leitura.error) {
     // Erro de permissão também protege os dados, mas o esperado é "lista vazia".
     ok(`"${tabela}" bloqueada (${leitura.error.message})`)
   } else if (leitura.data.length === 0) {
@@ -97,9 +102,9 @@ const escrita = await supabase.from('restaurantes').insert({
   longitude: 0,
   faixa_preco: 1,
 })
-escrita.error
-  ? ok('visitante não consegue criar restaurante')
-  : falha('um visitante conseguiu criar restaurante! Apague a linha "Teste" e confira o schema.sql.')
+if (semConexao(escrita.error)) falha('não deu para conferir a gravação: sem conexão com o Supabase')
+else if (escrita.error) ok('visitante não consegue criar restaurante')
+else falha('um visitante conseguiu criar restaurante! Apague a linha "Teste" e confira o schema.sql.')
 
 console.log(falhas === 0 ? '\nTudo certo.' : `\n${falhas} falha(s).`)
 process.exit(falhas === 0 ? 0 : 1)

@@ -64,7 +64,8 @@ Versão 1, 22/10/2026. Base: `docs/brief.md`. Termos técnicos no glossário, no
 | Conteúdo | Usado em | Quem fornece |
 |---|---|---|
 | Restaurantes e pratos de exemplo (nome, preço, cozinha, restrições, momentos) | RF-04, RF-05 | Eu rascunho em `supabase/seed.sql`, vocês revisam |
-| Fotos dos pratos | RF-04, RNF-04 | Vocês, opcional. Enquanto isso, uma imagem provisória |
+| Fotos dos pratos | RF-04, RNF-04 | Vocês, opcional. Enquanto isso, uma imagem provisória nos cartões |
+| Fotos do Início (prato pronto e prato vazio) | Capa e história | Geradas por IA no Canva, ilustrativas (aviso no rodapé) |
 | Textos da página inicial (o que é, como funciona) | Início | Eu rascunho, vocês aprovam |
 | Ícones (restrições, momentos, coração, estrela) | Todas as telas | Eu desenho em SVG, guardados no próprio site |
 | Política de privacidade | RF-12 | Eu rascunho, vocês revisam [LGPD: confirmar] |

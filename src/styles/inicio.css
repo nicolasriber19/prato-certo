@@ -1,0 +1,647 @@
+/* Início contado pela rolagem ("scrollytelling"), no estilo "dark premium".
+   Movimento: transições usam --tempo-* (0 s com "reduzir movimento"); animações em loop
+   só existem dentro de @media (prefers-reduced-motion: no-preference). */
+
+.destaque-dourado {
+  color: var(--cor-destaque); /* 11,52:1 no fundo */
+}
+
+/* 1. Capa ---------------------------------------------------------------------- */
+.capa-escura {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: calc(100svh - 70px);
+  padding: 32px max(var(--espaco), calc((100% - var(--largura-maxima)) / 2)) 56px;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(55% 45% at 50% 45%, rgb(122 31 61 / 0.45), transparent 70%),
+    var(--cor-fundo);
+}
+
+.capa-escura__titulo {
+  display: grid;
+  justify-items: center;
+  margin: 0;
+  font-size: clamp(2.6rem, 0.8rem + 8vw, 7.5rem);
+  line-height: 0.92;
+}
+
+.capa-escura__linha {
+  position: relative;
+  z-index: 2;
+}
+
+/* O prato fica entre as duas linhas do título e passa um pouco por baixo delas */
+.capa-escura__prato {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(86vw, 560px);
+  margin: -8% 0;
+}
+
+/* Foto do prato (componentes/prato-foto.js) ---------------------------------
+   A foto é quadrada, com fundo preto. Uma máscara redonda deixa só o prato
+   (centro em 49,9% × 50,5%, raio de 44,4%) e esfuma a borda no fundo da página. */
+.prato-foto {
+  position: relative;
+  aspect-ratio: 1;
+  filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.6));
+}
+
+.prato-foto img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-mask-image: radial-gradient(circle at 49.9% 50.5%, #000 43.6%, transparent 45%);
+  mask-image: radial-gradient(circle at 49.9% 50.5%, #000 43.6%, transparent 45%);
+}
+
+/* Luz de vitrine: um brilho quente bem leve por cima do prato */
+.prato-foto::after {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, rgb(255 236 210 / 0.1), transparent 55%);
+  pointer-events: none;
+}
+
+/* Na história, a comida aparece do centro para fora e gira até o lugar, guiada por --massa
+   (0 a 1, da rolagem). Sem a variável (na capa), o valor padrão é 1: o prato aparece pronto.
+   Sem transição: quem manda é a rolagem, então a foto acompanha o dedo sem atraso. */
+.prato-foto--montavel .prato-foto__comida {
+  clip-path: circle(calc(var(--massa, 1) * 45%) at 49.9% 50.5%);
+  transform-origin: 49.9% 50.5%;
+  transform: rotate(calc((1 - var(--massa, 1)) * -60deg)) scale(calc(0.92 + var(--massa, 1) * 0.08));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Na capa, o prato gira bem devagar, como numa vitrine */
+  .capa-escura .prato-foto__comida {
+    transform-origin: 49.9% 50.5%;
+    animation: girar 90s linear infinite;
+  }
+
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.capa-escura__rodape {
+  position: relative;
+  z-index: 2;
+  max-width: 40rem;
+  margin-top: 24px;
+}
+
+.capa-escura__texto {
+  font-size: 1.25rem;
+  color: var(--cor-texto-suave);
+}
+
+.capa-escura__rodape .acoes {
+  justify-content: center;
+}
+
+.capa-escura__rolar {
+  margin: 40px 0 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .capa-escura__rolar {
+    animation: chamar 2s ease-in-out infinite;
+  }
+
+  @keyframes chamar {
+    50% {
+      transform: translateY(6px);
+    }
+  }
+}
+
+/* 2. História: o palco fica parado enquanto os passos passam -------------------- */
+.historia {
+  display: grid;
+  padding-inline: max(var(--espaco), calc((100% - var(--largura-maxima)) / 2));
+  border-top: 1px solid var(--cor-borda-suave);
+  /* A foto girando passa um pouco das bordas: "clip" corta sem criar uma área de rolagem,
+     então o palco continua parado na tela (com "hidden", o position: sticky pararia de funcionar). */
+  overflow-x: clip;
+}
+
+/* No celular, o palco fica no alto e o texto dos passos passa por baixo dele:
+   o fundo do palco é opaco, com um degradê embaixo para o texto "sumir" suave. */
+.historia__palco {
+  position: sticky;
+  top: 70px; /* logo abaixo do topo fixo */
+  z-index: 1;
+  height: 46svh;
+  background: var(--cor-fundo);
+}
+
+.historia__palco::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  height: 48px;
+  background: linear-gradient(var(--cor-fundo), transparent);
+  pointer-events: none;
+}
+
+/* Espaço depois do último passo: o prato pronto fica parado na tela por um tempo */
+.historia__passos {
+  padding-bottom: 45vh;
+}
+
+.historia__titulo {
+  margin-bottom: 0;
+}
+
+.historia__lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* No celular, o texto fica no alto de cada passo, para aparecer logo abaixo do palco */
+.passo-historia {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 70svh;
+  padding-top: 8px;
+  opacity: 0.35;
+  transition: opacity var(--tempo-medio) ease;
+}
+
+.passo-historia--ativo {
+  opacity: 1;
+}
+
+.passo-historia__numero {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--cor-destaque);
+}
+
+.passo-historia__verbo {
+  margin: 4px 0 12px;
+  font-family: var(--fonte-display);
+  font-size: clamp(2.75rem, 1.5rem + 6vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.passo-historia__texto {
+  max-width: 28rem;
+  font-size: 1.25rem;
+  color: var(--cor-texto-suave);
+}
+
+@media (min-width: 960px) {
+  .historia {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .historia__palco {
+    order: 2;
+    top: 90px;
+    height: calc(100svh - 110px);
+    padding-block: 24px;
+    background: none;
+  }
+
+  .historia__palco::after {
+    display: none;
+  }
+
+  .historia__passos {
+    padding-top: 15vh;
+    padding-bottom: 80vh;
+  }
+
+  .passo-historia {
+    justify-content: center;
+    min-height: 80svh;
+    padding-top: 0;
+  }
+}
+
+/* O palco: prato grande, anel de progresso, chips e cartão de sugestão
+   (componentes/palco-historia.js). As variáveis --progresso, --ponteiro, --acende,
+   --massa, --tomates, --folhas, --cartao e --motivos vêm da rolagem. */
+.palco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  container-type: size; /* o tamanho do prato acompanha o espaço do palco (cqw, cqh) */
+}
+
+/* Quadrado com o prato, o anel e os chips: o maior que couber */
+.palco__centro {
+  position: relative;
+  width: min(100cqw, 94cqh, 540px);
+  aspect-ratio: 1;
+}
+
+.palco__prato {
+  position: absolute;
+  inset: 6%; /* a foto ocupa 88% do palco: o prato chega a 39% do centro, perto do anel */
+}
+
+/* Anel de progresso e relógio, por cima do prato */
+.palco__anel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.anel__trilho {
+  fill: none;
+  stroke: var(--cor-borda-suave);
+  stroke-width: 2;
+}
+
+.anel__progresso {
+  fill: none;
+  stroke: var(--cor-destaque);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: calc((1 - var(--progresso, 0)) * 100);
+}
+
+.anel__marca circle {
+  fill: var(--cor-fundo);
+  stroke: var(--cor-borda);
+  stroke-width: 1.5;
+  transition:
+    fill var(--tempo-medio) ease,
+    stroke var(--tempo-medio) ease;
+}
+
+.anel__marca text {
+  font-family: var(--fonte-display);
+  font-size: 11px;
+  font-weight: 800;
+  fill: var(--cor-texto-suave);
+  transition: fill var(--tempo-medio) ease;
+}
+
+/* Marca do passo atual e das que já passaram: dourada */
+.palco[data-passo='1'] .anel__marca[data-marca='1'] circle,
+.palco[data-passo='2'] .anel__marca:is([data-marca='1'], [data-marca='2']) circle,
+.palco[data-passo='3'] .anel__marca circle {
+  fill: var(--cor-destaque);
+  stroke: var(--cor-destaque);
+}
+
+.palco[data-passo='1'] .anel__marca[data-marca='1'] text,
+.palco[data-passo='2'] .anel__marca:is([data-marca='1'], [data-marca='2']) text,
+.palco[data-passo='3'] .anel__marca text {
+  fill: var(--cor-sobre-destaque);
+}
+
+/* Chips: posição calculada pela rolagem (left/top), centrados no ponto */
+.palco__chips {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.palco__chips li {
+  position: absolute;
+  translate: -50% -50%;
+  display: inline-flex;
+  gap: 0.4em;
+  align-items: center;
+  padding: 0.3em 0.75em;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--cor-superficie);
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity var(--tempo-medio) ease,
+    transform var(--tempo-medio) var(--curva);
+}
+
+.palco[data-passo='1'] .palco__chips li {
+  opacity: 1;
+  transform: none;
+}
+
+/* Ao pousar na borda, o chip ganha uma borda dourada: o prato "aprendeu" o gosto */
+.palco__chips li {
+  border-color: color-mix(in srgb, var(--cor-destaque) calc(var(--pouso, 0) * 100%), var(--cor-borda));
+}
+
+/* Passo 2: a hora de agora, grande, no centro do prato ------------------------- */
+.palco__hora {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  margin: 0;
+  text-align: center;
+  opacity: 0;
+  transition: opacity var(--tempo-medio) ease;
+  pointer-events: none;
+}
+
+.palco[data-passo='2'] .palco__hora {
+  opacity: 1;
+}
+
+.palco__relogio {
+  font-family: var(--fonte-display);
+  font-size: min(13cqw, 12cqh);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--cor-texto);
+  text-shadow: 0 2px 20px rgb(0 0 0 / 0.8);
+  font-variant-numeric: tabular-nums;
+}
+
+/* O nome do momento acende em dourado quando o destaque do seletor chega nele */
+.palco__momento {
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cor-destaque); /* 11,52:1 */
+  opacity: calc(0.35 + var(--acende, 0) * 0.65);
+}
+
+/* No passo 2, o prato encolhe e sobe um pouco, para dar lugar ao seletor embaixo */
+.palco__centro {
+  transition: transform var(--tempo-lento) var(--curva);
+}
+
+.palco[data-passo='2'] .palco__centro {
+  transform: translateY(-9%) scale(0.8);
+}
+
+/* Luz atrás do prato com a cor do momento: dourada no almoço, vinho no jantar, champanhe no lanche */
+.palco__centro::before {
+  content: '';
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--luz-do-momento) 0%, transparent 65%);
+  opacity: 0;
+  transition: opacity var(--tempo-medio) ease;
+  pointer-events: none;
+}
+
+.palco[data-passo='2'] .palco__centro::before {
+  opacity: calc(var(--acende, 0) * 0.9);
+}
+
+.palco[data-momento='almoco_rapido'] {
+  --luz-do-momento: rgb(230 192 138 / 0.45);
+}
+
+.palco[data-momento='jantar_romantico'] {
+  --luz-do-momento: rgb(168 57 94 / 0.6);
+}
+
+.palco[data-momento='lanche_economico'] {
+  --luz-do-momento: rgb(240 211 168 / 0.32);
+}
+
+/* Seletor de momento: o destaque desliza até o momento de agora (--seletor = 0, 1 ou 2) */
+.palco__seletor {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(100%, 28rem);
+  padding: 4px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio);
+  background: rgb(23 18 20 / 0.85);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition:
+    opacity var(--tempo-medio) ease,
+    transform var(--tempo-medio) var(--curva);
+  pointer-events: none;
+}
+
+.palco[data-passo='2'] .palco__seletor {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.palco__seletor-destaque {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / 3);
+  border: 1px solid var(--cor-destaque);
+  border-radius: var(--raio);
+  background: rgb(230 192 138 / 0.08);
+  box-shadow: 0 0 24px rgb(230 192 138 / calc(0.1 + var(--acende, 0) * 0.25));
+  transform: translateX(calc(var(--seletor, 0) * 100%));
+}
+
+.palco__segmento {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 10px 6px;
+  text-align: center;
+}
+
+.palco__segmento-nome {
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.palco__segmento-horas {
+  font-size: 0.8125rem; /* 13 px: rótulo curto, só ilustração (o palco é aria-hidden) */
+  color: var(--cor-texto-suave);
+}
+
+.palco__segmento--agora .palco__segmento-nome {
+  color: color-mix(in srgb, var(--cor-destaque) calc(var(--acende, 0) * 100%), var(--cor-texto));
+}
+
+.palco__sugestao {
+  position: absolute;
+  right: 0;
+  bottom: 4%;
+  z-index: 2;
+  display: grid;
+  gap: 4px;
+  width: min(17rem, 72%);
+  padding: 14px 16px;
+  border: 1px solid var(--cor-primaria);
+  border-radius: var(--raio);
+  background: var(--cor-superficie-2);
+  box-shadow: var(--brilho-vinho);
+  /* Entra subindo, seguindo a rolagem do passo 3 */
+  opacity: var(--cartao, 0);
+  transform: translateY(calc((1 - var(--cartao, 0)) * 24px));
+}
+
+.palco__sugestao p {
+  display: flex;
+  gap: 0.4em;
+  align-items: center;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.palco__sugestao .icone {
+  color: var(--cor-sucesso);
+}
+
+.palco__sugestao-nome {
+  font-size: 1.125rem !important;
+  font-weight: 700;
+}
+
+/* Os motivos aparecem um por um, cada um com o seu "confere" (--i = 0, 1, 2) */
+.palco__motivo {
+  --marcado: clamp(0, var(--motivos, 0) * 3 - var(--i), 1);
+  opacity: calc(0.15 + var(--marcado) * 0.85);
+}
+
+.palco__motivo .icone {
+  transform: scale(var(--marcado));
+}
+
+/* 3. Restrições ----------------------------------------------------------------- */
+.faixa-restricoes {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.selos--grandes {
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.selos--grandes .selo {
+  padding: 0.5em 1em;
+  border-radius: var(--raio);
+  font-size: 1.25rem;
+}
+
+/* 4. Números -------------------------------------------------------------------- */
+.numeros {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.numeros__lista {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 24px;
+  margin: 0;
+}
+
+@media (min-width: 960px) {
+  .numeros__lista {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* O número aparece em cima, mas no HTML vem depois do texto (dt antes de dd) */
+.numeros__item {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.numeros__valor {
+  margin: 0;
+  font-family: var(--fonte-display);
+  font-size: clamp(3rem, 2rem + 4vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cor-destaque);
+  font-variant-numeric: tabular-nums;
+}
+
+.numeros__texto {
+  color: var(--cor-texto-suave);
+}
+
+/* 5. Prévia do cartão que desliza --------------------------------------------- */
+.previa {
+  display: grid;
+  gap: 32px;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+@media (min-width: 960px) {
+  .previa {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.controles-baralho--dois {
+  grid-template-columns: 1fr 1fr !important;
+}
+
+/* 6. Chamada final -------------------------------------------------------------- */
+.chamada {
+  padding-block: 96px;
+  text-align: center;
+  border-top: 1px solid var(--cor-borda-suave);
+  background:
+    radial-gradient(50% 60% at 50% 100%, rgb(122 31 61 / 0.4), transparent 70%),
+    var(--cor-fundo);
+}
+
+.chamada h2 {
+  font-size: clamp(2.25rem, 1rem + 5vw, 4.5rem);
+}
+
+.chamada .acoes {
+  justify-content: center;
+}
+
+.chamada .nota-exemplo {
+  margin-top: 40px;
+}

@@ -166,3 +166,17 @@ prato-certo/
 - **Tela Hoje sem o botão "Me sugira"**: a sugestão já aparece ao abrir, para o momento da hora. Um toque a menos.
 - **Nota baixa pesa −8** (era −4): com −4, um prato que a pessoa avaliou com 1 estrela ainda podia aparecer em primeiro.
 - **Favoritos**: tirar um favorito não some com o cartão na hora; ele fica até sair da tela, para dar para desfazer.
+- **Interface v2 (23/10/2026), "interativa e tecnológica" seguindo as heurísticas de Nielsen** (ver `docs/heuristicas.md`):
+  - cor da marca **vinho** (`#7a1f3d`), com degradês, topo de vidro e capa com brilhos;
+  - na tela Hoje, **cartão que desliza** (direita = Quero este, esquerda = Pular), com setas do teclado, botões e "Voltar";
+  - **avisos com Desfazer** (e Ctrl+Z) ao favoritar e escolher;
+  - **esqueletos de carregamento**, transição entre telas e barra de progresso nas preferências;
+  - tudo para com "reduzir movimento".
+- **`npm run dev:demo`**: o modo demonstração continua disponível mesmo com o Supabase configurado.
+- **Interface v3 (23/10/2026), estilo "dark premium" com *scrollytelling*** (referência: https://movits.github.io/sonora/):
+  - tema escuro no site todo (fundo quase preto puxado para o vinho, texto branco gelo, vinho e dourado champanhe), com cantos quase retos;
+  - fontes Unbounded (títulos grandes, em maiúsculas) e Onest (texto), guardadas no próprio site;
+  - Início contado pela rolagem: capa com título gigante em volta de um prato desenhado em SVG, história CONTE → ESCOLHA → COMA com o prato parado no lugar, números grandes, prévia do cartão que desliza e chamada final;
+  - contraste AA conferido em todas as telas por um verificador automático (e os degradês, à mão, em `tokens.css`).
+- **História do Início, versão 2** (`componentes/palco-historia.js`): o prato ficou maior, com um **anel de progresso** dourado (marcas 01, 02, 03) que enche ao longo dos 3 passos. No passo 1, os chips do perfil **orbitam no anel e pousam na borda** do prato. No passo 2, a **hora de agora aparece grande** no prato e, embaixo, um **seletor com os 3 momentos** (e o horário de cada um) tem o destaque deslizando até o momento desta hora; a luz atrás do prato ganha a cor do momento. (Uma primeira versão usava um relógio de 24 h na borda do prato, mas ficou poluída e difícil de ler: o meio-dia ficava embaixo e o lanche aparecia em dois pedaços.) No passo 3, o prato **se monta** (espaguete em espiral, tomates, manjericão) e o cartão entra com os motivos um por um. Tudo acompanha a rolagem; com "reduzir movimento", cada passo aparece pronto.
+- **Fotos de comida de verdade** (`componentes/prato-foto.js`): duas fotos geradas por IA no Canva (o espaguete pronto e o mesmo prato vazio, 1080 × 1080 px, cerca de 140 KB cada), em `public/img/prato/`. Os pratos das duas fotos estão alinhados (diferença de 1 px), então ficam empilhados: na capa, o prato pronto gira devagar; no passo 3, a comida aparece do centro para fora e gira até o lugar, sobre o prato vazio. O rodapé avisa que as fotos são ilustrativas. A terceira foto planejada (só a massa) não foi gerada, porque os créditos de IA do Canva acabaram.

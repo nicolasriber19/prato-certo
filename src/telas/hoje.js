@@ -1,17 +1,19 @@
 // Tela "Hoje" (#/hoje): a principal (RF-03, RF-04, RF-05, RF-09).
-// Mostra uma sugestão em destaque, "Outra sugestão" e as outras opções, para o momento escolhido.
+// A sugestão aparece num cartão que desliza: para a direita, "Quero este"; para a esquerda, "Pular".
+// "Voltar" desfaz o último "Pular", e "Quero este" tem "Desfazer" no aviso.
 // Sem preferências salvas, leva a pessoa para #/preferencias.
 
 import { lerPerfil } from '../dados/perfis.js'
 import { carregarCatalogo } from '../dados/catalogo.js'
 import { listarFavoritos } from '../dados/favoritos.js'
-import { listarEscolhas, registrarEscolha } from '../dados/escolhas.js'
+import { listarEscolhas, registrarEscolha, apagarEscolha } from '../dados/escolhas.js'
 import { minhasAvaliacoes, notasDosPratos } from '../dados/avaliacoes.js'
 import { recomendarPratos, recomendarRestaurantes } from '../lib/recomendar.js'
 import { MOMENTOS, momentoDaHora, nomeDoMomento } from '../lib/momento.js'
 import { coordenadasDoBairro } from '../lib/distancia.js'
 import { ORCAMENTOS, nomeDaRestricao } from '../lib/opcoes.js'
 import { juntar } from '../lib/textos.js'
+import { emReais } from '../lib/dinheiro.js'
 import { trocarPara } from '../lib/rotas.js'
 import { anunciar } from '../lib/anunciar.js'
 import { icone } from '../lib/icone.js'
@@ -19,6 +21,9 @@ import { escapar } from '../lib/html.js'
 import { chip, ligarChips } from '../componentes/chips.js'
 import { cardPrato, ligarFavoritos } from '../componentes/card-prato.js'
 import { cardRestaurante } from '../componentes/card-restaurante.js'
+import { ligarDeslizar } from '../componentes/deslizar.js'
+import { avisar } from '../componentes/avisos.js'
+import { esqueleto } from '../componentes/esqueleto.js'
 
 const OUTRAS_OPCOES = 6
 
@@ -36,7 +41,7 @@ export const hoje = {
   titulo: 'O que vou comer hoje?',
 
   async montar(area) {
-    area.innerHTML = '<h1>O que vou comer hoje?</h1><div data-corpo><p class="carregando">Buscando sugestões…</p></div>'
+    area.innerHTML = `<h1>O que vou comer hoje?</h1><div data-corpo>${esqueleto({ cartoes: 2, texto: 'Buscando sugestões…' })}</div>`
 
     const [perfil, catalogo, favoritos, escolhas, minhas, notas] = await Promise.all([
       lerPerfil(),
@@ -54,11 +59,12 @@ export const hoje = {
     const estado = {
       momento: momentoDaHora(),
       aba: 'pratos',
-      indice: 0, // qual sugestão está em destaque ("Outra sugestão" soma 1)
+      indice: 0, // qual sugestão está no cartão
+      vistos: [], // índices anteriores, para o "Voltar"
+      escolhido: null, // { escolha, sugestao } depois de "Quero este"
       origem: coordenadasDoBairro(perfil.bairro),
       origemTexto: perfil.bairro ? `do bairro ${perfil.bairro} (do seu perfil)` : null, // "a partir do bairro..."
       escolhas,
-      escolhidosAgora: new Set(), // pratos escolhidos nesta visita: o botão vira "Escolhido"
     }
 
     const corpo = area.querySelector('[data-corpo]')
@@ -89,6 +95,7 @@ export const hoje = {
     const resultados = corpo.querySelector('[data-resultados]')
     const textoLocal = corpo.querySelector('[data-local]')
     const botaoLocal = corpo.querySelector('[data-usar-local]')
+    let baralho = null // { pular, querer } do cartão atual
 
     function calcular() {
       return recomendarPratos({
@@ -110,12 +117,27 @@ export const hoje = {
         : `${icone('pino')} <span>Sem localização: as distâncias não aparecem.</span>`
     }
 
-    function htmlDosPratos(sugestoes, acimaDoOrcamento) {
+    // Depois de "Quero este": o cartão vira a confirmação da escolha.
+    function htmlDoEscolhido() {
+      const { prato, restaurante } = estado.escolhido.sugestao
+      return `
+        <section class="escolhido" aria-labelledby="titulo-escolhido">
+          <p class="escolhido__selo">${icone('confere')} Escolhido para ${nomeDoMomento(estado.momento).toLowerCase()}</p>
+          <h2 id="titulo-escolhido" tabindex="-1">${escapar(prato.nome)}</h2>
+          <p class="escolhido__onde">${restaurante ? `${escapar(restaurante.nome)} · ` : ''}${emReais(prato.preco)}</p>
+          <p>Bom apetite! Depois, conte como foi em <a href="#/historico">Minhas escolhas</a>: sua nota melhora as próximas sugestões.</p>
+          <div class="acoes">
+            <a class="botao" href="#/prato/${prato.id}">${icone('prato')} Ver detalhes</a>
+            <button type="button" class="botao" data-acao="continuar">${icone('outra')} Ver outras sugestões</button>
+          </div>
+        </section>
+      `
+    }
+
+    function htmlDoBaralho(sugestoes, acimaDoOrcamento) {
       const total = sugestoes.length
-      const indice = estado.indice % total
-      const atual = sugestoes[indice]
-      const resto = [...sugestoes.slice(indice + 1), ...sugestoes.slice(0, indice)].slice(0, OUTRAS_OPCOES)
-      const escolhido = estado.escolhidosAgora.has(atual.prato.id)
+      const atual = sugestoes[estado.indice]
+      const depois = [...sugestoes.slice(estado.indice + 1), ...sugestoes.slice(0, estado.indice)].slice(0, OUTRAS_OPCOES)
 
       return `
         ${
@@ -124,22 +146,32 @@ export const hoje = {
             : ''
         }
         <p class="rotulo-destaque">Sua sugestão para ${nomeDoMomento(estado.momento).toLowerCase()}</p>
-        ${cardPrato(atual, { destaque: true, escolhido, favorito: favoritos.pratos.has(atual.prato.id) })}
-        ${
-          escolhido
-            ? `<p class="confirmacao" role="status">${icone('confere')} <span>Boa escolha! Depois, conte como foi em <a href="#/historico">Minhas escolhas</a>.</span></p>`
-            : ''
-        }
-        <div class="acoes acoes--outra">
-          <button type="button" class="botao" data-acao="outra">${icone('outra')} Outra sugestão</button>
-          <span class="contador-sugestao">Sugestão ${indice + 1} de ${total}</span>
+        <div class="baralho">
+          <div class="deslizavel" tabindex="0" role="group" aria-roledescription="cartão"
+            aria-label="Sugestão ${estado.indice + 1} de ${total}: ${escapar(atual.prato.nome)}"
+            aria-describedby="dica-deslizar" data-deslizavel>
+            <span class="selo-deslize selo-deslize--quero" aria-hidden="true">${icone('confere')} Quero</span>
+            <span class="selo-deslize selo-deslize--pular" aria-hidden="true">${icone('outra')} Pular</span>
+            ${cardPrato(atual, { destaque: true, comEscolha: false, favorito: favoritos.pratos.has(atual.prato.id) })}
+          </div>
         </div>
+        <p class="dica" id="dica-deslizar">
+          Arraste o cartão: para a direita, você quer; para a esquerda, pula. No teclado, use as setas.
+        </p>
+        <div class="controles-baralho">
+          <button type="button" class="botao" data-acao="voltar" ${estado.vistos.length === 0 ? 'aria-disabled="true"' : ''}>
+            ${icone('voltar')} Voltar
+          </button>
+          <button type="button" class="botao botao--grande" data-acao="pular">${icone('outra')} Pular</button>
+          <button type="button" class="botao botao--primario botao--grande" data-acao="quero">${icone('confere')} Quero este</button>
+        </div>
+        <p class="contador-sugestao">Sugestão ${estado.indice + 1} de ${total}</p>
 
         ${
-          resto.length > 0
-            ? `<h2 class="titulo-secao">Outras opções</h2>
+          depois.length > 0
+            ? `<h2 class="titulo-secao">Mais opções para você</h2>
               <ul class="cartoes" role="list">
-                ${resto.map((s) => `<li>${cardPrato(s, { favorito: favoritos.pratos.has(s.prato.id), maxMotivos: 2 })}</li>`).join('')}
+                ${depois.map((s) => `<li>${cardPrato(s, { favorito: favoritos.pratos.has(s.prato.id), maxMotivos: 2 })}</li>`).join('')}
               </ul>`
             : ''
         }
@@ -157,10 +189,13 @@ export const hoje = {
     }
 
     function desenhar() {
-      // Guarda qual botão tinha o foco, para devolver depois de redesenhar.
-      const comFoco = document.activeElement?.closest?.('[data-resultados] [data-acao]')?.dataset.acao
+      // Guarda onde estava o foco, para devolver depois de redesenhar (RNF-02).
+      const ativo = document.activeElement
+      const focoNoCartao = Boolean(ativo?.closest?.('[data-resultados] [data-deslizavel]'))
+      const focoEmAcao = ativo?.closest?.('[data-resultados] [data-acao]')?.dataset.acao
 
       const { sugestoes, acimaDoOrcamento } = calcular()
+      baralho = null
       if (sugestoes.length === 0) {
         resultados.innerHTML = `
           <p class="aviso">${icone('alerta')} <span>Nenhum prato de exemplo atende a todas as suas restrições.</span></p>
@@ -168,10 +203,64 @@ export const hoje = {
         `
         return
       }
-      resultados.innerHTML =
-        estado.aba === 'pratos' ? htmlDosPratos(sugestoes, acimaDoOrcamento) : htmlDosRestaurantes(sugestoes)
+      estado.indice %= sugestoes.length
 
-      if (comFoco) resultados.querySelector(`[data-acao="${comFoco}"]`)?.focus()
+      if (estado.aba === 'restaurantes') {
+        resultados.innerHTML = htmlDosRestaurantes(sugestoes)
+        return
+      }
+      if (estado.escolhido) {
+        resultados.innerHTML = htmlDoEscolhido()
+        return
+      }
+
+      resultados.innerHTML = htmlDoBaralho(sugestoes, acimaDoOrcamento)
+      const cartao = resultados.querySelector('[data-deslizavel]')
+      baralho = ligarDeslizar(cartao, {
+        aoEsquerda: () => pular(sugestoes),
+        aoDireita: () => querer(sugestoes[estado.indice]),
+      })
+
+      if (focoNoCartao) cartao.focus()
+      else if (focoEmAcao) resultados.querySelector(`[data-acao="${focoEmAcao}"]`)?.focus()
+    }
+
+    function pular(sugestoes) {
+      estado.vistos.push(estado.indice)
+      estado.indice = (estado.indice + 1) % sugestoes.length
+      desenhar()
+      const nome = sugestoes[estado.indice].prato.nome
+      anunciar(estado.indice === 0 ? `Você viu todas. De volta à primeira: ${nome}.` : `Sugestão ${estado.indice + 1}: ${nome}.`)
+    }
+
+    function voltar() {
+      if (estado.vistos.length === 0) return
+      estado.indice = estado.vistos.pop()
+      desenhar()
+      anunciar(`De volta: ${calcular().sugestoes[estado.indice].prato.nome}.`)
+    }
+
+    async function querer(sugestao) {
+      try {
+        const escolha = await registrarEscolha(sugestao.prato.id, estado.momento)
+        estado.escolhas = [escolha, ...estado.escolhas]
+        estado.escolhido = { escolha, sugestao }
+        desenhar()
+        resultados.querySelector('#titulo-escolhido')?.focus()
+        avisar(`${sugestao.prato.nome}: escolha registrada.`, {
+          desfazer: async () => {
+            await apagarEscolha(escolha.id)
+            estado.escolhas = estado.escolhas.filter((e) => e.id !== escolha.id)
+            if (estado.escolhido?.escolha.id === escolha.id) estado.escolhido = null
+            desenhar()
+            resultados.querySelector('[data-deslizavel]')?.focus() // o foco volta para o cartão
+          },
+        })
+      } catch (erro) {
+        console.error(erro)
+        desenhar() // o cartão volta para o lugar
+        avisar('Não deu para registrar a escolha. Confira sua internet e tente de novo.', { tipo: 'erro' })
+      }
     }
 
     // Momento
@@ -180,6 +269,8 @@ export const hoje = {
       aoMudar: ([momento]) => {
         estado.momento = momento
         estado.indice = 0
+        estado.vistos = []
+        estado.escolhido = null
         desenhar()
         anunciar(`Sugestões para ${nomeDoMomento(momento).toLowerCase()}.`)
       },
@@ -206,7 +297,7 @@ export const hoje = {
             botaoLocal.hidden = true
             desenharLocal()
             desenhar()
-            anunciar('Pronto: distâncias a partir de onde você está.')
+            avisar('Pronto: distâncias a partir de onde você está.', { tipo: 'info' })
           },
           () => {
             desenharLocal()
@@ -229,38 +320,19 @@ export const hoje = {
       },
     })
 
-    resultados.addEventListener('click', async (evento) => {
+    resultados.addEventListener('click', (evento) => {
       const botao = evento.target.closest('[data-acao]')
       if (!botao) return
-
-      if (botao.dataset.acao === 'outra') {
-        const { sugestoes } = calcular()
-        estado.indice = (estado.indice + 1) % sugestoes.length
+      const acao = botao.dataset.acao
+      if (acao === 'pular') baralho?.pular()
+      if (acao === 'quero') baralho?.querer()
+      if (acao === 'voltar') voltar()
+      if (acao === 'continuar') {
+        estado.escolhido = null
+        estado.vistos.push(estado.indice)
+        estado.indice += 1
         desenhar()
-        const nome = sugestoes[estado.indice].prato.nome
-        anunciar(estado.indice === 0 ? `Você viu todas. De volta à primeira: ${nome}.` : `Sugestão ${estado.indice + 1}: ${nome}.`)
-      }
-
-      if (botao.dataset.acao === 'escolher' && !botao.dataset.ocupado) {
-        const pratoId = Number(botao.dataset.id)
-        if (estado.escolhidosAgora.has(pratoId)) return
-        botao.dataset.ocupado = 'sim'
-        try {
-          const escolha = await registrarEscolha(pratoId, estado.momento)
-          estado.escolhas = [escolha, ...estado.escolhas]
-          estado.escolhidosAgora.add(pratoId)
-          // Não redesenha a lista: o prato escolhido continua em destaque até a pessoa pedir outra.
-          botao.innerHTML = `${icone('confere')} Escolhido`
-          botao.closest('.cartao').insertAdjacentHTML(
-            'afterend',
-            `<p class="confirmacao" role="status">${icone('confere')} <span>Boa escolha! Depois, conte como foi em <a href="#/historico">Minhas escolhas</a>.</span></p>`,
-          )
-        } catch (erro) {
-          console.error(erro)
-          anunciar('Não deu para registrar a escolha. Tente de novo.')
-        } finally {
-          delete botao.dataset.ocupado
-        }
+        resultados.querySelector('[data-deslizavel]')?.focus()
       }
     })
 

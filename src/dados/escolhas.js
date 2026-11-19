@@ -14,6 +14,16 @@ export async function registrarEscolha(pratoId, momento) {
   )
 }
 
+// "Desfazer" logo depois de escolher (avisos com Desfazer).
+export async function apagarEscolha(id) {
+  if (modoDemonstracao) {
+    gravarTabela('escolhas', lerTabela('escolhas').filter((escolha) => escolha.id !== id))
+    return
+  }
+  // A RLS garante que só apaga as escolhas de quem está logado.
+  dadosOuErro(await supabase.from('escolhas').delete().eq('id', id))
+}
+
 // Da mais nova para a mais antiga.
 export async function listarEscolhas() {
   const linhas = modoDemonstracao

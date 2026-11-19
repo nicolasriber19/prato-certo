@@ -7,8 +7,8 @@ import { emReais } from '../lib/dinheiro.js'
 import { formatarDistancia } from '../lib/distancia.js'
 import { RESTRICOES } from '../lib/opcoes.js'
 import { caminho } from '../lib/caminho.js'
-import { anunciar } from '../lib/anunciar.js'
 import { favoritar, desfavoritar } from '../dados/favoritos.js'
+import { avisar } from './avisos.js'
 
 export function selosDoPrato(prato) {
   const selos = RESTRICOES.filter((restricao) => prato.tags.includes(restricao.id))
@@ -55,19 +55,28 @@ export function ligarFavoritos(area, { aoMudar } = {}) {
     const id = Number(botao.dataset.id)
     const ligar = botao.getAttribute('aria-pressed') !== 'true'
 
+    // O mesmo prato pode aparecer duas vezes na tela (destaque e lista): marca todos.
+    const marcarTodos = (ligado) => {
+      area
+        .querySelectorAll(`[data-acao="favoritar"][data-tipo="${tipo}"][data-id="${id}"]`)
+        .forEach((outro) => marcarFavorito(outro, ligado))
+      aoMudar?.(tipo, id, ligado)
+    }
+
     botao.dataset.ocupado = 'sim'
     try {
       await (ligar ? favoritar(tipo, id) : desfavoritar(tipo, id))
-      // O mesmo prato pode aparecer duas vezes na tela (destaque e lista): marca os dois.
-      area
-        .querySelectorAll(`[data-acao="favoritar"][data-tipo="${tipo}"][data-id="${id}"]`)
-        .forEach((outro) => marcarFavorito(outro, ligar))
+      marcarTodos(ligar)
       if (ligar) pulsar(botao)
-      anunciar(ligar ? 'Adicionado aos favoritos.' : 'Removido dos favoritos.')
-      aoMudar?.(tipo, id, ligar)
+      avisar(ligar ? 'Salvo nos favoritos.' : 'Removido dos favoritos.', {
+        desfazer: async () => {
+          await (ligar ? desfavoritar(tipo, id) : favoritar(tipo, id))
+          marcarTodos(!ligar)
+        },
+      })
     } catch (erro) {
       console.error(erro)
-      anunciar('Não deu para salvar o favorito. Tente de novo.')
+      avisar('Não deu para salvar o favorito. Confira sua internet e tente de novo.', { tipo: 'erro' })
     } finally {
       delete botao.dataset.ocupado
     }
@@ -85,7 +94,8 @@ export function botaoEscolher(prato, escolhido = false) {
 
 // sugestao: { prato, restaurante, motivos, distanciaKm } (de recomendar.js)
 // destaque: cartão grande, no alto da tela "Hoje"
-export function cardPrato(sugestao, { favorito = false, destaque = false, escolhido = false, maxMotivos = 3, acoes = true } = {}) {
+// comEscolha: mostra o botão "Escolhi este" (no baralho da tela Hoje, os botões ficam fora do cartão)
+export function cardPrato(sugestao, { favorito = false, destaque = false, comEscolha = destaque, escolhido = false, maxMotivos = 3, acoes = true } = {}) {
   const { prato, restaurante, motivos = [], distanciaKm = null } = sugestao
   const Titulo = destaque ? 'h2' : 'h3'
   const foto = prato.foto
@@ -117,7 +127,7 @@ export function cardPrato(sugestao, { favorito = false, destaque = false, escolh
       ${
         acoes
           ? `<div class="cartao__acoes">
-              ${destaque ? botaoEscolher(prato, escolhido) : ''}
+              ${comEscolha ? botaoEscolher(prato, escolhido) : ''}
               ${botaoFavorito('prato', prato.id, favorito)}
             </div>`
           : ''

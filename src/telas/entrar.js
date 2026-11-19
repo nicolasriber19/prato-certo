@@ -101,6 +101,7 @@ function montarFormulario(area, tipo) {
           area.innerHTML = `
             <h1 tabindex="-1">Confira seu e-mail</h1>
             <p class="tela__intro">Enviamos um link para <strong></strong>. Clique nele e depois entre com sua senha.</p>
+            <p>Não chegou? Olhe também a caixa de spam. Se o link abrir uma página de erro, volte aqui e toque em "Entrar": a conta já fica confirmada.</p>
             <div class="acoes"><a class="botao botao--primario" href="#/entrar">${icone('entrar')} Entrar</a></div>
           `
           area.querySelector('strong').textContent = email

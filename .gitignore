@@ -16,6 +16,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+!.env.demo
 
 # Imagens e vídeos originais, pesados demais para o Git
 _originais/

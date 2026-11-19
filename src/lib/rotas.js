@@ -4,9 +4,11 @@
 //
 // Cada tela é um objeto { titulo, montar(area, parametros) }.
 // montar() desenha a tela dentro de "area" e pode ser async (para buscar dados).
+// Se montar() devolver uma função, ela é chamada quando a pessoa sair da tela.
 
 let config
 let primeiraTela = true
+let limparTelaAnterior = null // função que a tela anterior devolveu em montar(), se devolveu
 
 // rotas:          [{ caminho: '/prato/:id', tela, exigeLogin }]
 // alvo:           onde as telas são desenhadas (o <main>)
@@ -82,6 +84,9 @@ async function abrir() {
   const { rota, parametros } = achou ?? { rota: { tela: config.naoEncontrada }, parametros: {} }
   const { tela } = rota
 
+  limparTelaAnterior?.()
+  limparTelaAnterior = null
+
   // Cada tela ganha uma área nova. Se a pessoa trocar de tela antes de a anterior
   // terminar de carregar, a anterior escreve numa área que já saiu da página.
   const area = document.createElement('div')
@@ -109,7 +114,8 @@ async function abrir() {
   primeiraTela = false
 
   try {
-    await carregando
+    const limpar = await carregando
+    if (typeof limpar === 'function') limparTelaAnterior = limpar
   } catch (erro) {
     console.error(erro)
     area.insertAdjacentHTML(

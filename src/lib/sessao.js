@@ -51,9 +51,22 @@ export async function entrar(email, senha) {
 
 // Se a confirmação de e-mail estiver ligada no Supabase, a conta nasce sem sessão:
 // a pessoa precisa clicar no link do e-mail antes de entrar.
+// O link volta para este mesmo site (ex.: http://localhost:5180/prato-certo/), desde que
+// o endereço esteja em Authentication → URL Configuration → Redirect URLs no Supabase.
+// Se não estiver, o Supabase usa o "Site URL" de lá.
 export async function criarConta(email, senha) {
-  const { data, error } = await supabase.auth.signUp({ email, password: senha })
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: senha,
+    options: { emailRedirectTo: location.origin + import.meta.env.BASE_URL },
+  })
   if (error) throw new Error(traduzirErro(error))
+  // E-mail já cadastrado: por segurança, o Supabase não dá erro nem manda e-mail,
+  // só devolve um usuário sem "identities". Sem esta conferência, o site diria
+  // "Confira seu e-mail" e o e-mail nunca chegaria.
+  if (data.user && data.user.identities?.length === 0) {
+    throw new Error('Já existe uma conta com este e-mail. Toque em "Entrar".')
+  }
   if (!data.session) return { precisaConfirmar: true }
   definirUsuario(resumir(data.session))
   return { precisaConfirmar: false }

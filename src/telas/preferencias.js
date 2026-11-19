@@ -7,7 +7,8 @@ import { chip, ligarChips, valoresLigados } from '../componentes/chips.js'
 import { COZINHAS, RESTRICOES, ORCAMENTOS } from '../lib/opcoes.js'
 import { BAIRROS } from '../lib/distancia.js'
 import { irPara } from '../lib/rotas.js'
-import { anunciar } from '../lib/anunciar.js'
+import { avisar } from '../componentes/avisos.js'
+import { esqueleto } from '../componentes/esqueleto.js'
 import { icone } from '../lib/icone.js'
 
 const PADRAO = { gostos: [], nao_gosta: [], restricoes: [], orcamento_max: 50, bairro: '' }
@@ -95,7 +96,7 @@ export const preferencias = {
 
   async montar(area) {
     // O título fica fixo (o roteador põe o foco nele); só o corpo muda depois de carregar.
-    area.innerHTML = '<h1>Suas preferências</h1><div data-corpo><p class="carregando">Carregando…</p></div>'
+    area.innerHTML = `<h1>Suas preferências</h1><div data-corpo>${esqueleto({ cartoes: 2 })}</div>`
     const salvo = await lerPerfil()
     const primeiraVez = !salvo
     const perfil = { ...PADRAO, ...salvo }
@@ -106,7 +107,7 @@ export const preferencias = {
       <p class="tela__intro">
         ${primeiraVez ? 'São 3 etapas rápidas. Depois, é só pedir sugestões.' : 'Mude o que quiser e toque em "Salvar".'}
       </p>
-      ${primeiraVez ? '<p class="etapas__progresso" data-progresso></p>' : ''}
+      ${primeiraVez ? '<p class="etapas__progresso" data-progresso></p><div class="etapas__barra" aria-hidden="true"><span data-barra></span></div>' : ''}
       <form class="preferencias" data-preferencias>
         ${partes.join('')}
         <p class="aviso aviso--erro" role="alert" data-erro hidden></p>
@@ -129,6 +130,7 @@ export const preferencias = {
       atual = indice
       etapas.forEach((etapa, i) => (etapa.hidden = i !== indice))
       area.querySelector('[data-progresso]').textContent = `Etapa ${indice + 1} de ${etapas.length}`
+      area.querySelector('[data-barra]').style.width = `${((indice + 1) / etapas.length) * 100}%`
       botaoVoltar.hidden = indice === 0
       const ultima = indice === etapas.length - 1
       botaoAvancar.innerHTML = ultima
@@ -156,7 +158,7 @@ export const preferencias = {
       form.dataset.ocupado = 'sim'
       try {
         await salvarPerfil(lerFormulario(form))
-        anunciar('Preferências salvas.')
+        avisar('Preferências salvas. As sugestões já usam o que você escolheu.')
         irPara('/hoje')
       } catch (erro) {
         console.error(erro)

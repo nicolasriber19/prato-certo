@@ -19,6 +19,29 @@
   background: var(--cor-fundo);
 }
 
+/* Topo "de vidro": fica fixo no alto e deixa ver, desfocado, o que passa por baixo.
+   O desfoque fica numa camada à parte (::before): se ficasse no próprio .topo, a barra
+   de navegação do celular (position: fixed, dentro do topo) passaria a se posicionar
+   pelo topo, e não pela tela. */
+@supports (backdrop-filter: blur(1px)) {
+  .topo {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    isolation: isolate;
+    background: transparent;
+  }
+
+  .topo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(13 10 11 / 0.78);
+    backdrop-filter: saturate(1.4) blur(14px);
+  }
+}
+
 .marca {
   display: inline-flex;
   align-items: center;
@@ -26,7 +49,7 @@
   min-height: var(--toque-minimo);
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--cor-primaria-escura);
+  color: var(--cor-texto);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -67,7 +90,7 @@
 }
 
 .navegacao__link[aria-current='page'] {
-  color: var(--cor-primaria-escura);
+  color: var(--cor-primaria-clara);
   box-shadow: inset 0 3px 0 var(--cor-primaria);
 }
 
@@ -94,7 +117,7 @@ body:has(.navegacao:not([hidden])) {
   }
 
   .navegacao__link:hover {
-    background: var(--cor-fundo-suave);
+    background: var(--cor-superficie-2);
     color: var(--cor-texto);
   }
 
@@ -133,12 +156,12 @@ body:has(.navegacao:not([hidden])) {
   max-width: 60ch;
   padding: 12px var(--espaco);
   border-radius: var(--raio);
-  background: var(--cor-fundo-suave);
+  background: var(--cor-superficie);
 }
 
 .aviso--erro {
   color: var(--cor-erro);
-  background: #fdecea; /* texto de erro sobre ele: 5,72:1 */
+  background: var(--cor-erro-fundo); /* texto de erro sobre ele: 8,47:1 */
 }
 
 .acoes {
@@ -231,7 +254,7 @@ body:has(.navegacao:not([hidden])) {
   padding: 20px;
   border: 1px solid var(--cor-borda-suave);
   border-radius: var(--raio);
-  background: var(--cor-fundo);
+  background: var(--cor-superficie);
 }
 
 .cartao h3 {
@@ -253,46 +276,7 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .faixa--suave {
-  background: var(--cor-fundo-suave);
-}
-
-.inicio h1 {
-  font-size: clamp(2.25rem, 1.6rem + 3vw, 3.5rem);
-  color: var(--cor-primaria-escura);
-}
-
-.passos {
-  counter-reset: passo;
-}
-
-.passos .cartao {
-  position: relative;
-  padding-top: 64px;
-}
-
-.passos .cartao::before {
-  counter-increment: passo;
-  content: counter(passo);
-  position: absolute;
-  top: 16px;
-  left: 20px;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-weight: 800;
-  color: #ffffff;
-  background: var(--cor-primaria);
-}
-
-.passos .cartao .icone {
-  position: absolute;
-  top: 18px;
-  right: 20px;
-  width: 32px;
-  height: 32px;
-  color: var(--cor-primaria);
+  background: var(--cor-superficie);
 }
 
 .nota-exemplo {
@@ -336,7 +320,7 @@ body:has(.navegacao:not([hidden])) {
   gap: 4px;
   padding: 12px 4px;
   border-radius: var(--raio);
-  background: var(--cor-fundo-suave);
+  background: var(--cor-superficie);
   font-size: 1rem;
 }
 
@@ -354,7 +338,7 @@ body:has(.navegacao:not([hidden])) {
   padding-block: 32px;
   border-top: 1px solid var(--cor-borda-suave);
   color: var(--cor-texto-suave);
-  background: var(--cor-fundo-suave);
+  background: var(--cor-superficie);
 }
 
 .rodape p {
@@ -375,7 +359,7 @@ body:has(.navegacao:not([hidden])) {
   align-items: center;
   gap: 0.4em;
   min-height: var(--toque-minimo);
-  color: var(--cor-primaria-escura);
+  color: var(--cor-primaria-clara);
   font-weight: 600;
 }
 
@@ -387,7 +371,8 @@ body:has(.navegacao:not([hidden])) {
   margin: 0;
   padding: 8px max(var(--espaco), calc((100% - var(--largura-maxima)) / 2));
   font-size: 1rem;
-  background: var(--cor-destaque); /* texto escuro sobre ela: 9,04:1 */
+  color: var(--cor-sobre-destaque);
+  background: var(--cor-destaque); /* texto escuro sobre ela: 10,78:1 */
 }
 
 .carregando {
@@ -405,9 +390,9 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .botao--perigo {
-  border-color: var(--cor-erro);
+  border-color: var(--cor-perigo);
   color: #ffffff;
-  background: var(--cor-erro); /* branco sobre ela: 6,54:1 */
+  background: var(--cor-perigo); /* branco sobre ela: 6,54:1 */
 }
 
 .botao--perigo:hover {
@@ -416,8 +401,8 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .botao-favorito[aria-pressed='true'] {
-  color: var(--cor-primaria-escura);
-  background: var(--cor-fundo-suave);
+  color: var(--cor-primaria-clara);
+  background: var(--cor-superficie-2);
 }
 
 /* Formulários (entrar, criar conta) ---------------------------------------- */
@@ -457,8 +442,8 @@ body:has(.navegacao:not([hidden])) {
   padding: 0.2em 0.75em;
   border-radius: 999px;
   font-weight: 700;
-  color: var(--cor-primaria-escura);
-  background: var(--cor-fundo-suave);
+  color: var(--cor-sobre-destaque);
+  background: var(--cor-destaque);
 }
 
 .etapa {
@@ -489,9 +474,13 @@ body:has(.navegacao:not([hidden])) {
   font-weight: 700;
 }
 
+/* "Qual é o momento?": rótulo pequeno, não um título grande */
 .titulo-pequeno {
-  margin-top: 16px;
-  font-size: 1.125rem;
+  margin-top: 24px;
+  font-family: var(--fonte);
+  font-size: 0.875rem;
+  letter-spacing: 0.14em;
+  color: var(--cor-destaque);
 }
 
 .barra-local {
@@ -513,10 +502,12 @@ body:has(.navegacao:not([hidden])) {
 /* Abas Pratos | Restaurantes: um botão ligado por vez (aria-pressed) */
 .abas {
   display: inline-flex;
+  flex-wrap: wrap; /* em telas muito estreitas, as abas descem em vez de vazar */
+  max-width: 100%;
   margin-top: 24px;
   padding: 4px;
   border-radius: calc(var(--raio) + 4px);
-  background: var(--cor-fundo-suave);
+  background: var(--cor-superficie);
 }
 
 .aba {
@@ -535,8 +526,8 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .aba[aria-pressed='true'] {
-  color: var(--cor-primaria-escura);
-  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  background: var(--cor-superficie-2);
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
 }
 
@@ -546,8 +537,11 @@ body:has(.navegacao:not([hidden])) {
 
 .rotulo-destaque {
   margin-bottom: 8px;
+  font-size: 0.875rem;
   font-weight: 700;
-  color: var(--cor-primaria-escura);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cor-destaque);
 }
 
 .acoes--outra {
@@ -607,7 +601,11 @@ body:has(.navegacao:not([hidden])) {
   display: flex;
   gap: 0.4em;
   align-items: center;
+  font-family: var(--fonte);
   font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none; /* nome do prato na letra normal, mesmo quando é um h2 */
 }
 
 /* O nome do prato é um link: ganha altura de toque de 44 px+ (RNF-09) */
@@ -621,7 +619,7 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .cartao-prato__nome .icone {
-  color: var(--cor-primaria);
+  color: var(--cor-primaria-clara);
 }
 
 .cartao-prato__onde {
@@ -672,8 +670,9 @@ body:has(.navegacao:not([hidden])) {
 .cartao-prato--destaque {
   max-width: 40rem;
   padding: 24px;
-  border: 2px solid var(--cor-primaria);
-  box-shadow: 0 6px 20px rgb(143 42 22 / 0.12);
+  border: 1px solid var(--cor-primaria);
+  background: var(--cor-superficie-2);
+  box-shadow: var(--brilho-vinho);
 }
 
 .cartao-prato--destaque .cartao-prato__nome {
@@ -830,7 +829,10 @@ body:has(.navegacao:not([hidden])) {
 }
 
 .escolha__prato {
+  font-family: var(--fonte);
   font-size: 1.25rem;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .escolha__sem-nota,
@@ -844,7 +846,7 @@ body:has(.navegacao:not([hidden])) {
   align-items: center;
   min-height: var(--toque-minimo);
   font-weight: 700;
-  color: var(--cor-primaria-escura);
+  color: var(--cor-primaria-clara);
   cursor: pointer;
 }
 

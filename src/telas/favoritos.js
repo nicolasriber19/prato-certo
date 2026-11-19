@@ -7,12 +7,13 @@ import { listarFavoritos } from '../dados/favoritos.js'
 import { icone } from '../lib/icone.js'
 import { cardPrato, ligarFavoritos } from '../componentes/card-prato.js'
 import { cardRestaurante } from '../componentes/card-restaurante.js'
+import { esqueleto } from '../componentes/esqueleto.js'
 
 export const favoritos = {
   titulo: 'Favoritos',
 
   async montar(area) {
-    area.innerHTML = '<h1>Favoritos</h1><div data-corpo><p class="carregando">Carregando…</p></div>'
+    area.innerHTML = `<h1>Favoritos</h1><div data-corpo>${esqueleto()}</div>`
     const [{ pratos, restaurantes }, favoritosSalvos] = await Promise.all([carregarCatalogo(), listarFavoritos()])
     const corpo = area.querySelector('[data-corpo]')
 

@@ -1,10 +1,17 @@
 // Página principal: importa os estilos, descobre quem está logado e liga o roteador.
 // Cada tela fica num arquivo de src/telas/ e é um objeto { titulo, montar }.
 
+// Letras guardadas no próprio site (RNF-08): só o alfabeto latino, que cobre o português.
+import '@fontsource/unbounded/latin-800.css'
+import '@fontsource/onest/latin-400.css'
+import '@fontsource/onest/latin-700.css'
+
 import './styles/tokens.css'
 import './styles/base.css'
 import './styles/telas.css'
 import './styles/animacao.css'
+import './styles/interacoes.css'
+import './styles/inicio.css'
 
 import { modoDemonstracao } from './lib/supabase.js'
 import { iniciarSessao, estaLogado, aoMudarSessao, sair } from './lib/sessao.js'

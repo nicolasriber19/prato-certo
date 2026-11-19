@@ -3,7 +3,7 @@
 import { lerPerfil } from '../dados/perfis.js'
 import { buscarPrato, buscarRestaurante } from '../dados/catalogo.js'
 import { listarFavoritos } from '../dados/favoritos.js'
-import { registrarEscolha } from '../dados/escolhas.js'
+import { registrarEscolha, apagarEscolha } from '../dados/escolhas.js'
 import { minhasAvaliacoes, notasDosPratos } from '../dados/avaliacoes.js'
 import { recomendarPratos } from '../lib/recomendar.js'
 import { momentoDaHora, nomeDoMomento } from '../lib/momento.js'
@@ -12,19 +12,20 @@ import { cozinha, nomeDaRestricao } from '../lib/opcoes.js'
 import { juntar, linkDoMapa } from '../lib/textos.js'
 import { emReais } from '../lib/dinheiro.js'
 import { irPara } from '../lib/rotas.js'
-import { anunciar } from '../lib/anunciar.js'
 import { icone } from '../lib/icone.js'
 import { escapar } from '../lib/html.js'
 import { selosDoPrato, botaoFavorito, botaoEscolher, ligarFavoritos, cardPrato } from '../componentes/card-prato.js'
 import { faixaDePreco } from '../componentes/card-restaurante.js'
 import { notaEmEstrelas, formAvaliacao, ligarAvaliacoes } from '../componentes/avaliacao.js'
+import { avisar } from '../componentes/avisos.js'
+import { esqueleto } from '../componentes/esqueleto.js'
 
 // Estrutura comum: "Voltar", título fixo (recebe o foco) e o corpo, preenchido depois de carregar.
-function esqueleto(area, titulo) {
+function estrutura(area, titulo) {
   area.innerHTML = `
     <p><button type="button" class="botao botao--leve" data-voltar>${icone('voltar')} Voltar</button></p>
     <h1>${titulo}</h1>
-    <div data-corpo><p class="carregando">Carregando…</p></div>
+    <div data-corpo>${esqueleto({ cartoes: 1 })}</div>
   `
   area.querySelector('[data-voltar]').addEventListener('click', () => {
     if (history.length > 1) history.back()
@@ -54,7 +55,7 @@ export const detalhePrato = {
   titulo: 'Prato',
 
   async montar(area, { id }) {
-    const corpo = esqueleto(area, 'Prato')
+    const corpo = estrutura(area, 'Prato')
     const encontrado = await buscarPrato(id)
     if (!encontrado) return naoEncontrado(area, corpo, 'Prato')
 
@@ -112,15 +113,23 @@ export const detalhePrato = {
       if (botao.dataset.ocupado || botao.dataset.feito) return
       botao.dataset.ocupado = 'sim'
       try {
-        await registrarEscolha(prato.id, momentoDaHora())
+        const escolha = await registrarEscolha(prato.id, momentoDaHora())
         botao.dataset.feito = 'sim'
         botao.lastChild.textContent = ' Escolhido'
         const confirmacao = corpo.querySelector('[data-confirmacao]')
         confirmacao.innerHTML = `${icone('confere')} <span>Boa escolha! Ele já está em <a href="#/historico">Minhas escolhas</a>.</span>`
         confirmacao.hidden = false
+        avisar('Escolha registrada.', {
+          desfazer: async () => {
+            await apagarEscolha(escolha.id)
+            delete botao.dataset.feito
+            botao.lastChild.textContent = ' Escolhi este'
+            confirmacao.hidden = true
+          },
+        })
       } catch (erro) {
         console.error(erro)
-        anunciar('Não deu para registrar a escolha. Tente de novo.')
+        avisar('Não deu para registrar a escolha. Confira sua internet e tente de novo.', { tipo: 'erro' })
       } finally {
         delete botao.dataset.ocupado
       }
@@ -132,7 +141,7 @@ export const detalheRestaurante = {
   titulo: 'Restaurante',
 
   async montar(area, { id }) {
-    const corpo = esqueleto(area, 'Restaurante')
+    const corpo = estrutura(area, 'Restaurante')
     const encontrado = await buscarRestaurante(id)
     if (!encontrado) return naoEncontrado(area, corpo, 'Restaurante')
 

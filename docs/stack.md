@@ -19,6 +19,8 @@ Decidido em 22/10/2026. Base: `docs/brief.md`, `docs/requisitos.md` e `docs/plan
 |---|---|---|---|
 | `vite` | 8.3.5 | MIT | Rodar o site no computador e gerar a versão final em `dist/`. |
 | `@supabase/supabase-js` | 2.118.0 | MIT | Login e leitura e escrita no banco (RF-01, RF-02, RF-06, RF-07). |
+| `@fontsource/unbounded` | 5.3.0 | OFL-1.1 | Letra dos títulos grandes (identidade visual). Os arquivos vão junto com o site, sem CDN (RNF-08). Só o peso 800 e o alfabeto latino. |
+| `@fontsource/onest` | 5.3.1 | OFL-1.1 | Letra do texto (pesos 400 e 700, alfabeto latino). Também guardada no site (RNF-08). |
 | `create-vite` | 9.3.1 | MIT | Só criou o projeto (`npm create vite`). Não fica instalado. |
 
 ```
@@ -27,6 +29,8 @@ $ npm --version                                    11.17.0
 $ npm view vite version license                    8.3.5  MIT
 $ npm view @supabase/supabase-js version license   2.118.0  MIT
 $ npm view create-vite version license             9.3.1  MIT
+$ npm view @fontsource/unbounded version license   5.3.0  OFL-1.1
+$ npm view @fontsource/onest version license       5.3.1  OFL-1.1
 ```
 
 **Regra para o futuro:** cada biblioteca nova precisa de um motivo ligado a um requisito, e versão e licença conferidas com `npm view <pacote> version license`.
@@ -53,6 +57,7 @@ npm install @supabase/supabase-js@2.118.0
 
 Para trabalhar:
 - `npm run dev`: abre o site em `http://localhost:5180/prato-certo/`.
+- `npm run dev:demo`: abre o site no **modo demonstração** em `http://localhost:5181/prato-certo/`, mesmo com o Supabase configurado (usa o `.env.demo`, com as chaves vazias). Bom para testar sem login e como plano B na apresentação.
 - `npm test`: roda os testes de `tests/`.
 - `npm run gerar-seed`: reescreve `supabase/seed.sql` a partir de `src/dados/catalogo-exemplo.js`. Rode sempre que mudar o catálogo; o `npm test` avisa se esquecer.
 - `npm run conferir`: confere a conexão com o Supabase e os dados de exemplo (precisa do `.env.local`).

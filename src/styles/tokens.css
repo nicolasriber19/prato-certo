@@ -1,32 +1,70 @@
-/* Variáveis do site: cores, letra e espaços.
-   Cores provisórias: podem mudar na etapa de identidade visual (passo 6),
-   mas toda troca precisa manter o contraste (RNF-03). */
+/* Variáveis do site: cores, letras, espaços, sombras e movimento.
+   Tema: escuro e premium, com vinho e um dourado champanhe (inspirado em páginas de produto
+   "dark premium", como https://movits.github.io/sonora/).
+   Toda troca de cor precisa manter o contraste (RNF-03): os números ao lado foram medidos
+   com a fórmula da WCAG 2.1, contra o fundo indicado. */
 
 :root {
-  /* Cores. Contraste medido contra o fundo branco, a não ser quando indicado. */
-  --cor-texto: #1f1f1f;           /* 16,48:1 (15,23:1 sobre o fundo suave) */
-  --cor-texto-suave: #4a4a4a;     /* 8,86:1 (8,19:1 sobre o fundo suave) */
-  --cor-fundo: #ffffff;
-  --cor-fundo-suave: #fbf5ef;     /* creme */
-  --cor-primaria: #b5371f;        /* terracota. Branco sobre ela: 5,95:1 */
-  --cor-primaria-escura: #8f2a16; /* branco sobre ela: 8,36:1 */
-  --cor-destaque: #f2b632;        /* mostarda. Texto escuro sobre ela: 9,04:1 */
-  --cor-sucesso: #1d6b35;         /* selos de restrição (vegano etc.): 6,55:1 */
-  --cor-sucesso-fundo: #e8f3ea;   /* verde sobre ele: 5,75:1 */
-  --cor-estrela: #a86b00;         /* estrelas cheias: mostarda escura, 4,40:1 (ícone pede 3:1) */
-  --cor-foco: #0a3d8f;            /* 10,11:1 */
-  --cor-borda: #767676;           /* 4,54:1 (mínimo para bordas de botões e campos: 3:1) */
-  --cor-borda-suave: #e4d9cf;     /* só decorativa: cartões e divisórias */
-  --cor-erro: #b3261e;            /* 6,54:1 */
+  /* Fundos (do mais escuro ao mais claro) */
+  --cor-fundo: #0d0a0b;            /* quase preto, puxado para o vinho */
+  --cor-superficie: #171214;       /* cartões */
+  --cor-superficie-2: #211a1d;     /* cartões em destaque, campos, mouse em cima */
 
-  /* Letra do próprio aparelho: não baixa nenhum arquivo (RNF-08). */
-  --fonte: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Texto */
+  --cor-texto: #efe9e6;            /* branco gelo: 16,40:1 no fundo; 14,20:1 na superfície 2 */
+  --cor-texto-suave: #b3aaa7;      /* 8,66:1 no fundo; 7,50:1 na superfície 2 */
+
+  /* Marca: vinho */
+  --cor-primaria: #a8395e;         /* vinho vivo: texto branco 6,16:1; contra o fundo 3,20:1 (bordas pedem 3:1) */
+  --cor-primaria-escura: #7a1f3d;  /* texto branco 10,04:1 */
+  --cor-primaria-clara: #f08aa9;   /* rosé, para links e textos em vinho: 8,37:1 no fundo */
+  --cor-primaria-fundo: #2a1620;   /* trilho da barra de progresso, fundos tingidos */
+  --cor-noite: #3d0d1f;            /* vinho quase preto: texto 13,69:1 */
+  --degrade-marca: linear-gradient(135deg, var(--cor-noite) 0%, #5c1530 50%, var(--cor-primaria-escura) 100%);
+  --degrade-botao: linear-gradient(135deg, var(--cor-primaria-escura) 0%, var(--cor-primaria) 100%); /* branco: 6,16:1 ou mais */
+
+  /* Apoio */
+  --cor-destaque: #e6c08a;         /* dourado champanhe: 11,52:1 no fundo. Texto escuro sobre ele: 10,78:1 */
+  --cor-sobre-destaque: #1a1210;   /* texto em cima do dourado */
+  --cor-sucesso: #86d9a0;          /* restrição atendida: 9,44:1 sobre o fundo de sucesso */
+  --cor-sucesso-fundo: #12261a;
+  --cor-erro: #ff9a8f;             /* 8,47:1 sobre o fundo de erro */
+  --cor-erro-fundo: #2b1414;
+  --cor-perigo: #b3261e;           /* botão "Apagar": texto branco 6,54:1 */
+  --cor-estrela: #f2c14e;          /* 11,75:1 no fundo */
+  --cor-foco: #8fb8ff;             /* azul claro: 9,83:1, diferente do vinho e do dourado */
+  --cor-borda: #8a7f80;            /* bordas de botões, chips e campos: 5,10:1 no fundo (pedem 3:1) */
+  --cor-borda-suave: #2e2427;      /* só decorativa: cartões e divisórias */
+
+  /* Letras guardadas no próprio site (RNF-08), em src/main.js:
+     Unbounded para os títulos grandes, Onest para o resto. */
+  --fonte: 'Onest', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --fonte-display: 'Unbounded', 'Arial Black', system-ui, sans-serif;
 
   /* Tamanhos e espaços */
-  --toque-minimo: 48px;           /* RNF-09 pede 44 px; 48 dá folga */
-  --raio: 12px;
+  --toque-minimo: 48px;            /* RNF-09 pede 44 px; 48 dá folga */
+  --raio: 2px;                     /* cantos quase retos, como no estilo de referência */
   --espaco: 16px;
   --largura-maxima: 1200px;
 
-  color-scheme: light;
+  /* Sombras e brilhos */
+  --sombra-leve: 0 1px 2px rgb(0 0 0 / 0.4);
+  --sombra-media: 0 12px 40px rgb(0 0 0 / 0.5);
+  --brilho-vinho: 0 0 0 1px rgb(240 138 169 / 0.15), 0 20px 60px rgb(168 57 94 / 0.25);
+
+  /* Movimento: curto, para não atrasar ninguém. Com "reduzir movimento", vira 0. */
+  --tempo-rapido: 0.15s;
+  --tempo-medio: 0.3s;
+  --tempo-lento: 0.6s;
+  --curva: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --tempo-rapido: 0s;
+    --tempo-medio: 0s;
+    --tempo-lento: 0s;
+  }
 }

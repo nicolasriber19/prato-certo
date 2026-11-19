@@ -8,6 +8,7 @@
       content="Prato Certo: sugestões de pratos e restaurantes de acordo com seus gostos, suas restrições e seu orçamento."
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#0d0a0b" />
     <title>Prato Certo</title>
   </head>
   <body>
@@ -75,10 +76,13 @@
         </li>
       </ul>
       <p>Prato Certo: projeto final de Desenvolvimento de Interfaces, CEUB, 2026.</p>
-      <p>Os restaurantes e os pratos são exemplos fictícios. Confirme sempre com o restaurante se o prato atende à sua restrição.</p>
+      <p>Os restaurantes e os pratos são exemplos fictícios, e as fotos de pratos foram geradas por IA (imagens ilustrativas). Confirme sempre com o restaurante se o prato atende à sua restrição.</p>
     </footer>
 
-    <!-- Avisos lidos pelo leitor de tela (ex.: "Adicionado aos favoritos") -->
+    <!-- Avisos flutuantes com "Desfazer" (src/componentes/avisos.js). aria-live: o leitor de tela lê sem mudar o foco. -->
+    <div class="avisos" aria-live="polite" data-avisos></div>
+
+    <!-- Avisos só para o leitor de tela (ex.: "Sugestão 2: Burrito") -->
     <p class="visualmente-oculto" aria-live="polite" data-anuncio></p>
 
     <script type="module" src="/src/main.js"></script>
