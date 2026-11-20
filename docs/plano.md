@@ -1,5 +1,7 @@
 # Plano: Prato Certo (projeto final de Desenvolvimento de Interfaces, CEUB)
 
+> **Atenção: este é o plano original (versão 1, com login e várias telas).** Em 19/11/2026, o site virou uma **página única, sem login**: restrições, o que gosta e uma tabela de restaurantes e preços. Veja a última decisão no fim deste arquivo e os documentos atuais em `docs/requisitos.md` e `docs/stack.md`. O plano fica aqui como registro de como o projeto começou.
+
 ## Contexto
 O documento do projeto (Carlos Eduardo e Nicolas, CEUB, 2026) descreve um site que responde "o que vou comer hoje?". A pessoa cadastra:
 - seus gostos;
@@ -180,3 +182,14 @@ prato-certo/
   - contraste AA conferido em todas as telas por um verificador automático (e os degradês, à mão, em `tokens.css`).
 - **História do Início, versão 2** (`componentes/palco-historia.js`): o prato ficou maior, com um **anel de progresso** dourado (marcas 01, 02, 03) que enche ao longo dos 3 passos. No passo 1, os chips do perfil **orbitam no anel e pousam na borda** do prato. No passo 2, a **hora de agora aparece grande** no prato e, embaixo, um **seletor com os 3 momentos** (e o horário de cada um) tem o destaque deslizando até o momento desta hora; a luz atrás do prato ganha a cor do momento. (Uma primeira versão usava um relógio de 24 h na borda do prato, mas ficou poluída e difícil de ler: o meio-dia ficava embaixo e o lanche aparecia em dois pedaços.) No passo 3, o prato **se monta** (espaguete em espiral, tomates, manjericão) e o cartão entra com os motivos um por um. Tudo acompanha a rolagem; com "reduzir movimento", cada passo aparece pronto.
 - **Fotos de comida de verdade** (`componentes/prato-foto.js`): duas fotos geradas por IA no Canva (o espaguete pronto e o mesmo prato vazio, 1080 × 1080 px, cerca de 140 KB cada), em `public/img/prato/`. Os pratos das duas fotos estão alinhados (diferença de 1 px), então ficam empilhados: na capa, o prato pronto gira devagar; no passo 3, a comida aparece do centro para fora e gira até o lugar, sobre o prato vazio. O rodapé avisa que as fotos são ilustrativas. A terceira foto planejada (só a massa) não foi gerada, porque os créditos de IA do Canva acabaram.
+- **Versão 3 (19/11/2026): página única.** A dupla pediu o site "em uma página só", com restrições, o que gosta e um lugar para ver os restaurantes e os preços. Respostas da dupla:
+  - login e telas (favoritos, minhas escolhas, avaliações, cartão que desliza): **tirar tudo**;
+  - restaurantes e preços: **tabela de preços**;
+  - capa: **só a foto de um prato normal, sem girar e sem animação**.
+
+  O que mudou:
+  - saíram o Supabase (e o `@supabase/supabase-js`), o roteador por `#`, as telas antigas, o modo demonstração e os scripts `conferir` e `gerar-seed`;
+  - a lógica da tabela fica em `src/lib/tabela.js` (testada em `tests/tabela.test.js`), e as escolhas ficam no navegador (`src/lib/memoria.js`);
+  - a tabela tem as colunas Prato, Restaurante (cozinha e bairro), Distância e Preço, e ordena por menor preço, mais perto ou restaurante;
+  - no celular, cada linha vira um cartão;
+  - o tema escuro, o vinho, o dourado e as fontes continuam.

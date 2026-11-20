@@ -1,32 +1,9 @@
-// Testes do momento pela hora e da distância (passo 9). Rode com:  npm test
+// Testes da distância até o restaurante. Rode com:  npm test
 
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
 
-import { momentoDaHora } from '../src/lib/momento.js'
 import { distanciaKm, formatarDistancia, coordenadasDoBairro, BAIRROS } from '../src/lib/distancia.js'
-
-// Hora local do aparelho, montada sem fuso: new Date(ano, mês, dia, hora, minuto)
-const as = (hora, minuto = 0) => new Date(2026, 9, 22, hora, minuto)
-
-describe('momentoDaHora', () => {
-  it('das 11h às 14h59 é almoço', () => {
-    assert.equal(momentoDaHora(as(11)), 'almoco_rapido')
-    assert.equal(momentoDaHora(as(12, 30)), 'almoco_rapido')
-    assert.equal(momentoDaHora(as(14, 59)), 'almoco_rapido')
-  })
-
-  it('das 18h às 23h59 é jantar', () => {
-    assert.equal(momentoDaHora(as(18)), 'jantar_romantico')
-    assert.equal(momentoDaHora(as(23, 59)), 'jantar_romantico')
-  })
-
-  it('no resto do dia é lanche', () => {
-    for (const hora of [0, 6, 10, 15, 17]) {
-      assert.equal(momentoDaHora(as(hora)), 'lanche_economico', `${hora}h`)
-    }
-  })
-})
 
 describe('distanciaKm', () => {
   it('é zero para o mesmo ponto', () => {

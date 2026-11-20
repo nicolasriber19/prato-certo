@@ -18,15 +18,6 @@
         "preview"
       ],
       "port": 4180
-    },
-    {
-      "name": "prato-certo-demo",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev:demo"
-      ],
-      "port": 5181
     }
   ]
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Prato Certo: sugestões de pratos e restaurantes de acordo com seus gostos, suas restrições e seu orçamento."
+      content="Prato Certo: marque suas restrições e o que você gosta e veja os pratos que servem para você, com o restaurante e o preço."
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#0d0a0b" />
@@ -13,77 +13,142 @@
   </head>
   <body>
     <!-- Atalho para quem usa teclado ou leitor de tela (RNF-02) -->
-    <a class="botao botao--primario pular-link" href="#conteudo" data-pular>Pular para o conteúdo</a>
+    <a class="botao botao--primario pular-link" href="#conteudo">Pular para o conteúdo</a>
 
     <header class="topo">
-      <a class="marca" href="#/">
+      <a class="marca" href="#topo">
         <img src="/favicon.svg" alt="" width="32" height="32" />
         Prato Certo
       </a>
-
-      <!-- No celular, esta navegação vira uma barra fixa no pé da tela (telas.css). -->
-      <nav class="navegacao" aria-label="Principal" data-navegacao data-so-logado hidden>
-        <a class="navegacao__link" href="#/hoje">
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#prato"></use></svg>
-          Hoje
-        </a>
-        <a class="navegacao__link" href="#/favoritos">
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#coracao"></use></svg>
-          Favoritos
-        </a>
-        <a class="navegacao__link" href="#/historico">
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#relogio"></use></svg>
-          Escolhas
-        </a>
-        <a class="navegacao__link" href="#/preferencias">
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#ajustes"></use></svg>
-          Perfil
-        </a>
+      <nav aria-label="Seções da página">
+        <ul class="topo__links">
+          <li><a href="#restricoes">Restrições</a></li>
+          <li><a href="#gostos">Gostos</a></li>
+          <li><a href="#precos">Preços</a></li>
+        </ul>
       </nav>
-
-      <div class="topo__conta">
-        <a class="botao" href="#/entrar" data-so-visitante>
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#entrar"></use></svg>
-          Entrar
-        </a>
-        <button type="button" class="botao" data-sair data-so-logado hidden>
-          <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#sair"></use></svg>
-          Sair
-        </button>
-      </div>
     </header>
 
-    <!-- Aparece só no modo demonstração (sem Supabase configurado): ver src/lib/supabase.js -->
-    <p class="aviso-demo" data-aviso-demo hidden>
-      <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#alerta"></use></svg>
-      Modo demonstração: os dados ficam só neste navegador.
-    </p>
-
-    <!-- Cada tela é desenhada aqui pelo roteador (src/lib/rotas.js). -->
     <main id="conteudo" tabindex="-1">
-      <noscript>
-        <p class="tela">O Prato Certo precisa de JavaScript ligado para funcionar.</p>
-      </noscript>
+      <!-- 1. Capa: uma foto comum de prato, parada (sem animação). -->
+      <section class="capa" id="topo" aria-labelledby="titulo-capa">
+        <div class="capa__texto">
+          <p class="rotulo">Restaurantes de Brasília</p>
+          <h1 id="titulo-capa">O que vou comer hoje?</h1>
+          <p class="capa__frase">
+            Marque suas restrições e o que você gosta. A tabela mostra só os pratos que servem para você, com o
+            restaurante, a distância e o preço.
+          </p>
+          <a class="botao botao--primario botao--grande" href="#restricoes">Começar</a>
+        </div>
+        <figure class="capa__foto">
+          <img
+            src="/img/prato/prato-espaguete.jpg"
+            alt="Prato de espaguete ao molho de tomate com rodelas de tomate e folhas de manjericão."
+            width="1080"
+            height="1080"
+            fetchpriority="high"
+          />
+          <figcaption>Espaguete ao pomodoro. Imagem ilustrativa.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 2. Escolhas: restrições e gostos, lado a lado no computador. -->
+      <div class="escolhas">
+        <section class="painel" id="restricoes" aria-labelledby="titulo-restricoes">
+          <p class="rotulo">Passo 1</p>
+          <h2 id="titulo-restricoes">Restrições</h2>
+          <p class="painel__dica" id="dica-restricoes">
+            O que você não pode comer. Um prato só aparece se atender a todas as que você marcar.
+          </p>
+          <div
+            class="chips"
+            role="group"
+            aria-labelledby="titulo-restricoes"
+            aria-describedby="dica-restricoes"
+            data-restricoes
+          ></div>
+        </section>
+
+        <section class="painel" id="gostos" aria-labelledby="titulo-gostos">
+          <p class="rotulo">Passo 2</p>
+          <h2 id="titulo-gostos">O que você gosta</h2>
+          <p class="painel__dica" id="dica-gostos">
+            As cozinhas que te dão vontade. Sem nenhuma marcada, a tabela mostra todas.
+          </p>
+          <div class="chips" role="group" aria-labelledby="titulo-gostos" aria-describedby="dica-gostos" data-gostos></div>
+        </section>
+      </div>
+
+      <!-- 3. Restaurantes e preços -->
+      <section class="precos" id="precos" aria-labelledby="titulo-precos">
+        <p class="rotulo">Passo 3</p>
+        <h2 id="titulo-precos">Restaurantes e preços</h2>
+
+        <div class="controles">
+          <div class="controle">
+            <label for="onde">Onde você está?</label>
+            <div class="controle__linha">
+              <select id="onde" data-onde>
+                <option value="">Escolha um bairro</option>
+              </select>
+              <button type="button" class="botao" data-localizar>
+                <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#localizacao"></use></svg>
+                Usar minha localização
+              </button>
+            </div>
+            <p class="controle__dica" aria-live="polite" data-dica-local></p>
+          </div>
+
+          <div class="controle">
+            <span class="controle__rotulo" id="rotulo-ordem">Ordenar por</span>
+            <div class="chips chips--ordem" role="group" aria-labelledby="rotulo-ordem" data-ordem></div>
+          </div>
+        </div>
+
+        <div class="resultado">
+          <p class="resultado__resumo" aria-live="polite" data-resumo></p>
+          <button type="button" class="botao" data-limpar hidden></button>
+        </div>
+
+        <!-- role explícito: no celular as linhas viram cartões (display: grid), e alguns
+             leitores de tela deixam de ver a tabela quando o display muda. -->
+        <table class="tabela" role="table" data-tabela>
+          <caption class="visualmente-oculto" data-legenda></caption>
+          <thead role="rowgroup">
+            <tr role="row">
+              <th role="columnheader" scope="col" data-coluna="prato">Prato</th>
+              <th role="columnheader" scope="col" data-coluna="restaurante">Restaurante</th>
+              <th role="columnheader" scope="col" data-coluna="distancia">Distância</th>
+              <th role="columnheader" scope="col" data-coluna="preco" class="tabela__preco">Preço</th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup" data-linhas></tbody>
+        </table>
+
+        <div class="vazio" data-vazio hidden>
+          <p class="vazio__titulo">Nenhum prato atende a tudo isso.</p>
+          <p>Tente desmarcar uma cozinha ou uma restrição.</p>
+        </div>
+      </section>
     </main>
 
     <footer class="rodape">
-      <ul class="rodape__links">
-        <li>
-          <a href="#/privacidade">
-            <svg class="icone" aria-hidden="true"><use href="/icons/icones.svg#escudo"></use></svg>
-            Privacidade
-          </a>
-        </li>
-      </ul>
       <p>Prato Certo: projeto final de Desenvolvimento de Interfaces, CEUB, 2026.</p>
-      <p>Os restaurantes e os pratos são exemplos fictícios, e as fotos de pratos foram geradas por IA (imagens ilustrativas). Confirme sempre com o restaurante se o prato atende à sua restrição.</p>
+      <p>
+        Os restaurantes e os pratos são exemplos fictícios, e a foto foi gerada por IA (imagem ilustrativa). Confirme
+        sempre com o restaurante se o prato atende à sua restrição.
+      </p>
+      <p>
+        Suas escolhas ficam guardadas só neste navegador. A sua localização é usada na hora e não é guardada.
+        <button type="button" class="link-botao" data-apagar>Apagar o que foi guardado</button>
+        <span aria-live="polite" data-apagado></span>
+      </p>
     </footer>
 
-    <!-- Avisos flutuantes com "Desfazer" (src/componentes/avisos.js). aria-live: o leitor de tela lê sem mudar o foco. -->
-    <div class="avisos" aria-live="polite" data-avisos></div>
-
-    <!-- Avisos só para o leitor de tela (ex.: "Sugestão 2: Burrito") -->
-    <p class="visualmente-oculto" aria-live="polite" data-anuncio></p>
+    <noscript>
+      <p class="sem-script">A tabela de pratos precisa de JavaScript ligado para funcionar.</p>
+    </noscript>
 
     <script type="module" src="/src/main.js"></script>
   </body>

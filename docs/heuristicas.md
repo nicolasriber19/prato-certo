@@ -1,78 +1,73 @@
 # Heurísticas de Nielsen no Prato Certo
 
-Versão 1, 23/10/2026. As 10 heurísticas de usabilidade de Jakob Nielsen ([fonte](https://www.nngroup.com/articles/ten-usability-heuristics/)), e onde cada uma aparece no site.
+Versão 3, 19/11/2026: **página única**. As 10 heurísticas de usabilidade de Jakob Nielsen ([fonte](https://www.nngroup.com/articles/ten-usability-heuristics/)), e onde cada uma aparece na página.
 
-O objetivo da versão 2 da interface era deixá-la **mais interativa e com cara de tecnologia, sem perder a usabilidade**. Por isso, cada efeito novo tem um motivo de usabilidade, e nenhum depende de movimento para funcionar.
+Na versão 3, o site virou uma página só, sem login e sem animação. Ela tem:
+1. uma foto de prato parada na capa;
+2. as restrições;
+3. o que a pessoa gosta;
+4. uma tabela de restaurantes e preços.
+
+As heurísticas abaixo valem para essa página.
 
 ## 1. Visibilidade do estado do sistema
-O site sempre mostra o que está acontecendo, logo depois de cada ação.
-- **Esqueletos de carregamento**: blocos no formato do conteúdo enquanto ele chega (`componentes/esqueleto.js`), no lugar de uma tela vazia.
-- **Avisos flutuantes** depois de favoritar, escolher e salvar preferências (`componentes/avisos.js`).
-- **Selos "Quero" e "Pular"** aparecem enquanto o cartão é arrastado, e ficam mais fortes conforme o arrasto avança.
-- **Barra de progresso** e "Etapa 2 de 3" nas preferências.
-- **"Sugestão 3 de 16"** embaixo do cartão, e o link da tela atual marcado na navegação.
+- **Resumo acima da tabela**, atualizado a cada toque: "16 pratos em 10 restaurantes, de R$ 15,00 a R$ 48,00". O leitor de tela também ouve o resumo (`aria-live`).
+- Os chips ligados ficam em vinho **e** ganham um "confere", então o estado não depende só da cor.
+- A coluna que define a ordem fica em dourado e sublinhada, e tem `aria-sort` para o leitor de tela.
+- "Procurando você…" no botão enquanto a localização é buscada.
 
 ## 2. Correspondência entre o sistema e o mundo real
-- Linguagem do dia a dia: "Quero este", "Pular", "Almoço rápido", "Até R$ 50". Nada de "score" ou "algoritmo".
-- **Motivos em palavras** em cada sugestão: "Vegano", "Bom para jantar romântico", "A 300 m".
-- O gesto de deslizar imita separar cartas: para a direita fica, para a esquerda passa.
-- Ícones familiares: coração para favorito, estrela para nota, alfinete para lugar.
+- Linguagem do dia a dia: "Onde você está?", "Mais perto", "Menor preço", "O que você gosta".
+- A distância vem em metros ou quilômetros, como numa conversa ("300 m", "6,7 km"). O preço vem em reais ("R$ 39,00").
+- Os bairros são os de Brasília, com o nome que todo mundo usa.
 
 ## 3. Controle e liberdade do usuário
-- **"Desfazer"** nos avisos de favoritar e de escolher, e **Ctrl+Z** como atalho.
-- **"Voltar"** no baralho desfaz o último "Pular".
-- Depois de escolher, "Ver outras sugestões" volta ao baralho.
-- Nas preferências, "Voltar" entre as etapas, e tudo pode ser mudado depois.
-- Tirar um favorito não some com o cartão na hora: dá para marcar de novo.
+- **"Limpar escolhas"** vira **"Desfazer"** logo depois de usado: um toque sem querer não apaga o trabalho.
+- Todo chip liga e desliga com o mesmo toque.
+- "Apagar o que foi guardado", no rodapé, tira as escolhas deste navegador.
 
 ## 4. Consistência e padrões
-- Os mesmos componentes em todas as telas: cartão de prato, chips, selos, botões e avisos.
-- Uma cor para cada sentido: **vinho** para ação e marca, **verde** para restrição atendida, **dourado** para destaque, **vermelho** para erro.
-- Ações principais sempre no mesmo lugar e com o mesmo nome ("Quero este", "Favoritar").
-- Padrões da web: logo leva ao início, a navegação fica no pé da tela no celular e no topo no computador.
+- Um só tipo de controle para escolher (os chips): nas restrições, nos gostos e na ordem.
+- Uma cor para cada sentido: **vinho** para ação e escolha ligada, **verde** para restrição atendida e **dourado** para preço e destaque.
+- A tabela segue o padrão da web: cabeçalho, linhas e preço alinhado à direita. No celular, ela vira cartões, como nos apps de comida.
 
 ## 5. Prevenção de erros
-- **Restrições são filtro, não sugestão**: um prato fora delas nunca aparece. Quando a pessoa abre um prato que não atende, aparece um aviso.
-- Escolhas por chips, sem digitar (não há como escrever "vegano" errado).
-- Uma cozinha não pode estar em "gosto" e "evito" ao mesmo tempo: ligar uma desliga a outra.
-- "Apagar meus dados" pede confirmação, com o foco na opção segura ("Cancelar").
-- O cartão só sai depois de passar de um limite de arrasto: um toque sem querer não pula nem escolhe.
+- **Restrição é filtro, não sugestão**: um prato que não atende a todas as restrições marcadas nunca aparece.
+- Tudo é escolhido por toque, sem digitar. Não há como escrever "vegano" errado.
+- "Mais perto" sem um local escolhido não bagunça a tabela. A página explica o que falta e leva o foco ao campo do bairro. Quando o bairro é escolhido, a ordem por distância entra sozinha. O chip fica com a borda tracejada enquanto falta o local.
+- `tests/catalogo.test.js` confere as marcas dos pratos (vegano também é vegetariano e sem lactose).
 
 ## 6. Reconhecer em vez de lembrar
-- O resumo do perfil fica no alto da tela Hoje ("Vegano · Até R$ 50 · Asa Sul"), com "Mudar" ao lado.
-- O momento já vem escolhido pela hora do dia.
-- Os selos de restrição aparecem em todo cartão.
-- A dica do gesto fica escrita embaixo do cartão ("Arraste o cartão... No teclado, use as setas").
+- Todas as opções ficam à vista: as 4 restrições, as 10 cozinhas e as 3 ordens.
+- Cada prato mostra os selos das restrições que ele atende, a cozinha e o bairro do restaurante.
+- As escolhas ficam guardadas: quem volta encontra tudo marcado.
 
 ## 7. Flexibilidade e eficiência de uso
-- **Três jeitos de decidir**: arrastar (celular), setas ← → (teclado) e botões (todo mundo).
-- **Ctrl+Z** para desfazer sem procurar o botão.
-- A sugestão já aparece ao abrir a tela, sem precisar de um "Me sugira".
-- Quem quer comparar tem "Mais opções para você" embaixo do cartão, e a aba "Restaurantes".
+- Dois jeitos de dizer onde está: o bairro (rápido, sem permissão) ou a localização do aparelho (mais exato).
+- Links no topo levam direto a cada parte (Restrições, Gostos e Preços).
+- A tabela já aparece completa ao abrir: quem só quer ver os preços não precisa marcar nada.
 
 ## 8. Estética e design minimalista
-- Um cartão em destaque por vez, com no máximo 3 motivos.
-- Tema escuro com **uma** cor de ação (vinho) e **uma** de destaque (dourado): o olho vai direto para o que importa.
-- Os efeitos (vidro no topo, brilho vinho atrás do prato, prato girando devagar) ficam no fundo e não disputam com o conteúdo.
-- Cada tela tem uma ação principal, com a cor mais forte.
+- Uma página, uma foto parada e uma tabela. Nada gira nem desliza.
+- Tema escuro com **uma** cor de ação (vinho) e **uma** de destaque (dourado), que vai no preço, a informação mais procurada.
+- Na tabela, só o necessário: prato, restaurante, distância e preço.
 
 ## 9. Ajudar a reconhecer, diagnosticar e recuperar erros
-- Mensagens em português simples, dizendo o que fazer: "E-mail ou senha incorretos.", "Não deu para salvar. Confira sua internet e tente de novo."
-- "Nada no seu orçamento. Estas são as opções mais em conta." em vez de uma lista vazia.
-- Página "não encontrada" com um botão de volta ao início.
-- Se o desfazer falhar, o aviso diz isso, em vez de fingir que deu certo.
+- Quando nada serve, a página diz o que fazer: "Nenhum prato atende a tudo isso. Tente desmarcar uma cozinha ou uma restrição."
+- A localização negada ou indisponível vira uma frase com a saída: "Sem permissão para ver sua localização. Escolha um bairro."
+- Para quem está longe de Brasília, a página avisa que as distâncias ficam grandes.
 
 ## 10. Ajuda e documentação
-- "Como funciona" contado pela rolagem na página inicial (CONTE → ESCOLHA → COMA), com o texto de cada passo também no HTML, para o leitor de tela.
-- Uma prévia do cartão que desliza na página inicial, para experimentar antes de criar conta.
-- Dica do gesto embaixo do cartão.
-- Página de Privacidade explicando quais dados são guardados e para quê.
-- Este documento e o `docs/requisitos.md`, para quem mantém o projeto.
+- Cada parte tem uma frase curta que explica a regra ("Um prato só aparece se atender a todas as que você marcar." e "Sem nenhuma marcada, a tabela mostra todas.").
+- Os rótulos "Passo 1, 2 e 3" mostram a ordem de uso.
+- O rodapé explica que os dados são de exemplo, que a foto é ilustrativa e o que fica guardado.
+- Este documento e o `docs/requisitos.md` servem para quem mantém o projeto.
 
-## Acessibilidade junto com os efeitos
-Todo efeito novo foi feito para não atrapalhar ninguém:
-- Com **"reduzir movimento"** ligado no aparelho, as durações viram 0 s (`tokens.css`), os brilhos e os esqueletos param, e o cartão sai sem voar.
-- O cartão que desliza recebe o foco do teclado e tem nome para o leitor de tela ("Sugestão 2 de 16: Espaguete ao pomodoro").
-- Os avisos são lidos pelo leitor de tela sem tirar o foco do lugar, e não somem enquanto o mouse ou o foco estiver neles.
-- Contraste AA conferido em todas as cores novas: os números estão em `src/styles/tokens.css`.
-- Botões com 48 px de altura, inclusive "Desfazer" e o "×" dos avisos.
+## Acessibilidade
+- Contraste AA nas cores (os números estão em `src/styles/tokens.css`).
+- Foco visível em azul claro, diferente do vinho e do dourado.
+- Chips e botões com 48 px de altura.
+- A tabela tem `role` explícito, para continuar sendo tabela no leitor de tela mesmo quando vira cartões no celular.
+- "Pular para o conteúdo" no começo da página.
+- A página é marcada como `lang="pt-BR"`.
+- A foto tem texto alternativo.

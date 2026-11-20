@@ -11,7 +11,7 @@ export default defineConfig({
   base: '/prato-certo/',
 
   // "mpa": arquivo que não existe responde 404, em vez de devolver o index.html.
-  // As telas usam rotas com "#" (#/hoje, #/favoritos), então isso não as atrapalha.
+  // O site é uma página só, e os links do topo usam âncoras (#restricoes, #precos).
   appType: 'mpa',
 
   // Portas próprias, para não brigar com o Superadega (5173 e 4173).

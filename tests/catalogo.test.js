@@ -1,20 +1,13 @@
-// Confere o catálogo de exemplo e se o supabase/seed.sql está em dia com ele.
+// Confere o catálogo de exemplo (src/dados/catalogo.js). Rode com:  npm test
 
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
 
-import { gerarSeed } from '../scripts/gerar-seed.js'
-import { RESTAURANTES, PRATOS } from '../src/dados/catalogo-exemplo.js'
+import { RESTAURANTES, PRATOS } from '../src/dados/catalogo.js'
 import { RESTRICOES, COZINHAS } from '../src/lib/opcoes.js'
-import { MOMENTOS } from '../src/lib/momento.js'
+import { coordenadasDoBairro } from '../src/lib/distancia.js'
 
 describe('catálogo de exemplo', () => {
-  it('o seed.sql foi gerado a partir do catálogo atual (rode "npm run gerar-seed")', () => {
-    const noDisco = readFileSync(new URL('../supabase/seed.sql', import.meta.url), 'utf8').replaceAll('\r\n', '\n')
-    assert.equal(noDisco, gerarSeed())
-  })
-
   it('ids únicos e todo prato aponta para um restaurante que existe', () => {
     assert.equal(new Set(RESTAURANTES.map((r) => r.id)).size, RESTAURANTES.length)
     assert.equal(new Set(PRATOS.map((p) => p.id)).size, PRATOS.length)
@@ -22,16 +15,21 @@ describe('catálogo de exemplo', () => {
     for (const prato of PRATOS) assert.ok(ids.has(prato.restaurante_id), prato.nome)
   })
 
-  it('só usa marcas, momentos e cozinhas conhecidos', () => {
+  it('só usa marcas e cozinhas que aparecem nos chips da página', () => {
     const marcas = new Set(RESTRICOES.map((r) => r.id))
-    const momentos = new Set(MOMENTOS.map((m) => m.id))
     const cozinhas = new Set(COZINHAS.map((c) => c.id))
     for (const prato of PRATOS) {
       prato.tags.forEach((tag) => assert.ok(marcas.has(tag), `${prato.nome}: ${tag}`))
-      prato.momentos.forEach((m) => assert.ok(momentos.has(m), `${prato.nome}: ${m}`))
       assert.ok(cozinhas.has(prato.cozinha), `${prato.nome}: ${prato.cozinha}`)
-      assert.ok(prato.momentos.length > 0, `${prato.nome} sem momento`)
     }
+  })
+
+  it('todo preço é um número maior que zero', () => {
+    for (const prato of PRATOS) assert.ok(Number.isFinite(prato.preco) && prato.preco > 0, prato.nome)
+  })
+
+  it('todo restaurante fica num bairro da lista "Onde você está?"', () => {
+    for (const restaurante of RESTAURANTES) assert.ok(coordenadasDoBairro(restaurante.bairro), restaurante.nome)
   })
 
   it('prato vegano também é vegetariano e sem lactose', () => {
@@ -40,9 +38,8 @@ describe('catálogo de exemplo', () => {
     }
   })
 
-  it('cada restrição e cada momento têm prato', () => {
-    for (const { id } of [...RESTRICOES, ...MOMENTOS]) {
-      assert.ok(PRATOS.some((p) => p.tags.includes(id) || p.momentos.includes(id)), id)
-    }
+  it('cada restrição e cada cozinha têm pelo menos um prato', () => {
+    for (const { id } of RESTRICOES) assert.ok(PRATOS.some((p) => p.tags.includes(id)), id)
+    for (const { id } of COZINHAS) assert.ok(PRATOS.some((p) => p.cozinha === id), id)
   })
 })

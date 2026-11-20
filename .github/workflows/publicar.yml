@@ -2,9 +2,8 @@
 # O Vite precisa montar o site antes (npm run build, que gera a pasta dist/):
 # publicar os arquivos do repositório direto não funciona.
 #
-# O site vai ao ar no modo demonstração: o .env.local não vai para o GitHub.
-# Para usar o Supabase no site publicado, crie os secrets VITE_SUPABASE_URL e
-# VITE_SUPABASE_PUBLISHABLE_KEY no repositório e descomente o bloco "env" do passo de build.
+# O site não tem login nem banco: o catálogo vem de src/dados/catalogo.js e as escolhas
+# ficam no navegador de quem usa. Por isso o build não precisa de nenhum segredo.
 #
 # Doc: https://vite.dev/guide/static-deploy#github-pages
 
@@ -44,9 +43,6 @@ jobs:
 
       - name: Montar o site
         run: npm run build
-        # env:
-        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-        #   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
       - uses: actions/configure-pages@v6
 

@@ -5,19 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:demo": "vite --mode demo --port 5181",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test",
-    "conferir": "node --env-file-if-exists=.env.local scripts/conferir-supabase.js",
-    "gerar-seed": "node scripts/gerar-seed.js"
+    "test": "node --test"
   },
   "devDependencies": {
     "vite": "^8.3.5"
   },
   "dependencies": {
     "@fontsource/onest": "^5.3.1",
-    "@fontsource/unbounded": "^5.3.0",
-    "@supabase/supabase-js": "^2.118.0"
+    "@fontsource/unbounded": "^5.3.0"
   }
 }
